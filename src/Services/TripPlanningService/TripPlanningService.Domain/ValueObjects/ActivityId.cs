@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace TripPlanningService.Domain.ValueObjects
 {
-    public record ItineraryDayId
+    public record ActivityId
     {
         public Guid Value { get; set; }
 
-        private ItineraryDayId(Guid value) => Value = value;
+        private ActivityId(Guid value) => Value = value;
 
-        public static ItineraryDayId Of(Guid value)
+        public static ActivityId Of(Guid value)
         {
             ArgumentNullException.ThrowIfNull(value);
             if (value == Guid.Empty)
@@ -20,7 +20,7 @@ namespace TripPlanningService.Domain.ValueObjects
                 throw new DomainException("OrderId cannot be empty.");
             }
 
-            return new ItineraryDayId(value);
+            return new ActivityId(value);
         }
     }
 }
