@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TripPlanningService.Domain.Events
 {
-    public record TripPublishedEvent(TripId Id) : IDomainEvent;
+    public record ActivityAddedEvent(TripId TripId, ItineraryDayId ItineraryDayId, ActivityId ActivityId) : IDomainEvent;
 }
