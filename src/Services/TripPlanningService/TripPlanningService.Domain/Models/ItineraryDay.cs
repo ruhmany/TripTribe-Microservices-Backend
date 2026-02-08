@@ -8,12 +8,14 @@ namespace TripPlanningService.Domain.Models
 
         private readonly List<Activity> _activities = new();
         public IReadOnlyCollection<Activity> Activities => _activities;
+        public TripId TripId { get; private set; } 
 
-        public static ItineraryDay Create(ItineraryDayId id, DateOnly date)
+        public static ItineraryDay Create(ItineraryDayId id, DateOnly date, TripId tripId)
         {
             var itineraryDay = new ItineraryDay
             {
                 Id = id,
+                TripId = tripId,
                 Date = date
             };
             return itineraryDay;

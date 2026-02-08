@@ -1,12 +1,12 @@
 ﻿namespace TripPlanningService.Domain.ValueObjects
 {
-    public record TripCollaboratorId
+    public record TripOwnerId
     {
         public Guid Value { get; set; }
 
-        private TripCollaboratorId(Guid value) => Value = value;
+        private TripOwnerId(Guid value) => Value = value;
 
-        public static TripCollaboratorId Of(Guid value)
+        public static TripOwnerId Of(Guid value)
         {
             ArgumentNullException.ThrowIfNull(value);
             if (value == Guid.Empty)
@@ -14,7 +14,7 @@
                 throw new DomainException("OrderId cannot be empty.");
             }
 
-            return new TripCollaboratorId(value);
+            return new TripOwnerId(value);
         }
     }
 }

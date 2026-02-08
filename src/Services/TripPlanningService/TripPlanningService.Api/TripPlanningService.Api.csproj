@@ -19,7 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Services\TripPlanningService\TripPlanningService.Infrastructure\TripPlanningService.Infrastructure.csproj" />
+    <ProjectReference Include="..\TripPlanningService.Application\TripPlanningService.Application.csproj" />
+    <ProjectReference Include="..\TripPlanningService.Infrastructure\TripPlanningService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

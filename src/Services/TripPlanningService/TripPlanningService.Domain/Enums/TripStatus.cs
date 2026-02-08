@@ -2,10 +2,10 @@
 {
     public enum TripStatus
     {
-        Planned = 0,
-        InProgress = 1,
-        Completed = 2,
-        Cancelled = 3,
-        Published = 4
+        Planned = 1,
+        InProgress = 2,
+        Completed = 3,
+        Cancelled = 4,
+        Published = 5
     }
 }

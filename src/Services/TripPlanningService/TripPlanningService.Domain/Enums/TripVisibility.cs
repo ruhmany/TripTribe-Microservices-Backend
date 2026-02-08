@@ -2,8 +2,8 @@
 {
     public enum TripVisibility
     {
-        VisableToOnlyMe = 0,
-        VisibleToCollaborators = 1,
-        PubliclyVisible = 2
+        VisableToOnlyMe = 1,
+        VisibleToCollaborators = 2,
+        PubliclyVisible = 3
     }
 }

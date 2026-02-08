@@ -4,27 +4,26 @@
     {
         public string Title { get; private set; }
         public string Notes { get; private set; }
+        public ItineraryDayId DayId { get; set; }
         public TimeOnly? StartTime { get; private set; }
         public TimeOnly? EndTime { get; private set; }
         public Location Location { get; private set; }
         public ActivityType Type { get; private set; }
-        public Money? EstimatedCost { get; private set; }
-
-        private Activity(string title, string notes, TimeOnly startTime, TimeOnly endTime, Location location, ActivityType activityType, Money estimatedCost)
-        {
-            Title = title;
-            Notes = notes;
-            StartTime = startTime;
-            EndTime = endTime;
-            Location = location;
-            Type = activityType;
-            EstimatedCost = estimatedCost;
-        }
+        public Money EstimatedCost { get; private set; }
 
         public static Activity Create(string title, string notes, TimeOnly startTime, TimeOnly endTime, Location location, ActivityType activityType, Money estimatedCost)
         {
             ModelValidations(title, notes);
-            return new Activity(title, notes, startTime, endTime, location, activityType, estimatedCost);
+            return new Activity
+            {
+                Title = title,
+                Notes = notes,
+                StartTime = startTime,
+                EndTime = endTime,
+                Location = location,
+                Type = activityType,
+                EstimatedCost = estimatedCost                
+            };
         }
 
         public void UpdateActivity(string title, string notes)

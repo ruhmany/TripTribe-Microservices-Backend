@@ -1,9 +1,12 @@
 ﻿namespace TripPlanningService.Domain.Models
 {
-    public class TripCollaborator
+    public class TripCollaborator : Entity<TripCollaboratorId>
     {
-        public TripCollaboratorId UserId { get; private set; }
         public TripRole Role { get; private set; }
+
+        private List<Trip> trips = new();
+
+        public IReadOnlyCollection<Trip> Trips { get; private set; }
 
         public void ChangeRole(TripRole newRole)
         {
@@ -14,7 +17,7 @@
         {
             var tripCollaborator = new TripCollaborator
             {
-                UserId = tripCollaboratorId,
+                Id = tripCollaboratorId,
                 Role = role
             };
             return tripCollaborator;

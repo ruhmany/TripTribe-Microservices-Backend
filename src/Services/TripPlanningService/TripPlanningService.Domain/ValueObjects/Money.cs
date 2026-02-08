@@ -9,7 +9,7 @@ namespace TripPlanningService.Domain.ValueObjects
         private Money(decimal amount, string currency)
         {
             Amount = amount;
-            currency = currency;
+            Currency = currency;
         }
 
         public static Money Create(decimal amount, string currency)

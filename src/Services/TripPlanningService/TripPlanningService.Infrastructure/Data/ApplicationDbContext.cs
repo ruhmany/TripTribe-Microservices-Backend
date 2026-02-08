@@ -1,4 +1,6 @@
-﻿namespace TripPlanningService.Infrastructure.Data
+﻿using System.Reflection;
+
+namespace TripPlanningService.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
@@ -14,5 +16,10 @@
 
         public DbSet<TripCollaborator> TripCollaborators => Set<TripCollaborator>();
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

@@ -18,8 +18,4 @@
     <ProjectReference Include="..\TripPlanningService.Application\TripPlanningService.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\EntitiesConfigurations\" />
-  </ItemGroup>
-
 </Project>

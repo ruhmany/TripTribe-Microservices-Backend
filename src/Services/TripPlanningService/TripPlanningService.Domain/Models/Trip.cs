@@ -2,7 +2,7 @@
 {
     public class Trip : Aggregate<TripId>
     {
-        public TripCollaboratorId OwnerId { get; private set; }
+        public TripOwnerId OwnerId { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
         public TripVisibility Visibility { get; private set; }
@@ -16,7 +16,7 @@
         public IReadOnlyCollection<TripCollaborator> Collaborators => _collaborators;
 
         #region Trip Functions
-        public static Trip Create(TripId tripId, TripCollaboratorId ownerId, string title,
+        public static Trip Create(TripId tripId, TripOwnerId ownerId, string title,
             string description, TripVisibility visibility, TripStatus status, DateRange dateRange)
         {
             if (ownerId == null)
@@ -93,7 +93,7 @@
             if (_days.Any(d => d.Date == date))
                 throw new DomainException("Day already exists");
 
-            var day = ItineraryDay.Create(ItineraryDayId.Of(new Guid()), date);
+            var day = ItineraryDay.Create(ItineraryDayId.Of(new Guid()), date, Id);
             _days.Add(day);
             AddDomainEvent(new DayAddedEvent(Id, day.Id, date));
         }
@@ -159,10 +159,10 @@
         {
             EnsureEditable();
 
-            if (userId == OwnerId)
+            if (userId.Value == OwnerId.Value)
                 throw new DomainException("Owner cannot be added as a collaborator");
 
-            if (_collaborators.Any(c => c.UserId == userId))
+            if (_collaborators.Any(c => c.Id == userId))
                 throw new DomainException("User is already a collaborator");
 
             var collaborator = TripCollaborator.Create(userId, role);
@@ -174,7 +174,7 @@
         {
             EnsureEditable();
 
-            var collab = _collaborators.FirstOrDefault(c => c.UserId == userId)
+            var collab = _collaborators.FirstOrDefault(c => c.Id == userId)
                 ?? throw new DomainException("Collaborator not found");
 
             _collaborators.Remove(collab);
@@ -185,7 +185,7 @@
         {
             EnsureEditable();
 
-            var collab = _collaborators.FirstOrDefault(c => c.UserId == userId)
+            var collab = _collaborators.FirstOrDefault(c => c.Id == userId)
                 ?? throw new DomainException("Collaborator not found");
 
             collab.ChangeRole(newRole);

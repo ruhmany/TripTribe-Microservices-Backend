@@ -2,8 +2,8 @@
 {
     public enum TripRole
     {
-        Owner = 0,
-        Editor = 1,
-        Viewer = 2
+        Owner = 1,
+        Editor = 2,
+        Viewer = 3
     }
 }
