@@ -15,6 +15,8 @@ namespace TripPlanningService.Infrastructure
         {
             var connectionsString = configuration.GetConnectionString("defaultConnection");
             services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(connectionsString));
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
             return services;
         }
     }

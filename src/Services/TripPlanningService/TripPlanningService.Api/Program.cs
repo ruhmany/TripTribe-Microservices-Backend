@@ -1,4 +1,6 @@
 
+using Carter;
+using TripPlanningService.Application;
 using TripPlanningService.Infrastructure;
 
 namespace TripPlanningService.Api
@@ -8,27 +10,22 @@ namespace TripPlanningService.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-
-            builder.Services.AddControllers();
             builder.Services.AddInfrastructureInjection(builder.Configuration);
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddApplicationServices();
+            builder.Services.AddCarter();
 
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                //app.UseSwagger();
+                //app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
 
-
-            app.MapControllers();
+            app.MapCarter();
 
             app.Run();
         }

@@ -85,7 +85,7 @@ namespace TripPlanningService.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_TripTripCollaborator_TripCollaborators_CollaboratorsId",
                         column: x => x.CollaboratorsId,
-                        principalTable: "TripCollaborators",
+                        principalTable: "Collaborators",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -139,8 +139,8 @@ namespace TripPlanningService.Infrastructure.Migrations
                 column: "TripId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TripTripCollaborator_TripsId",
-                table: "TripTripCollaborator",
+                name: "IX_TripCollaborators_TripsId",
+                table: "TripCollaboratos",
                 column: "TripsId");
         }
 
