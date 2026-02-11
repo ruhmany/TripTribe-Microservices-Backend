@@ -13,7 +13,7 @@ using TripPlanningService.Infrastructure.Data;
 namespace TripPlanningService.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260204093846_init")]
+    [Migration("20260211221856_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -40,8 +40,14 @@ namespace TripPlanningService.Infrastructure.Migrations
                     b.Property<Guid>("DayId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<TimeSpan?>("EndTime")
                         .HasColumnType("time");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -121,6 +127,12 @@ namespace TripPlanningService.Infrastructure.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -148,10 +160,16 @@ namespace TripPlanningService.Infrastructure.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(700)
                         .HasColumnType("nvarchar(700)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -199,11 +217,20 @@ namespace TripPlanningService.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -214,24 +241,11 @@ namespace TripPlanningService.Infrastructure.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "TripId");
 
-                    b.ToTable("TripCollaborators");
-                });
+                    b.HasIndex("TripId");
 
-            modelBuilder.Entity("TripTripCollaborator", b =>
-                {
-                    b.Property<Guid>("CollaboratorsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TripsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CollaboratorsId", "TripsId");
-
-                    b.HasIndex("TripsId");
-
-                    b.ToTable("TripTripCollaborator");
+                    b.ToTable("TripsCollaborators", (string)null);
                 });
 
             modelBuilder.Entity("TripPlanningService.Domain.Models.Activity", b =>
@@ -252,19 +266,15 @@ namespace TripPlanningService.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TripTripCollaborator", b =>
+            modelBuilder.Entity("TripPlanningService.Domain.Models.TripCollaborator", b =>
                 {
-                    b.HasOne("TripPlanningService.Domain.Models.TripCollaborator", null)
-                        .WithMany()
-                        .HasForeignKey("CollaboratorsId")
+                    b.HasOne("TripPlanningService.Domain.Models.Trip", "Trip")
+                        .WithMany("Collaborators")
+                        .HasForeignKey("TripId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TripPlanningService.Domain.Models.Trip", null)
-                        .WithMany()
-                        .HasForeignKey("TripsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("TripPlanningService.Domain.Models.ItineraryDay", b =>
@@ -274,6 +284,8 @@ namespace TripPlanningService.Infrastructure.Migrations
 
             modelBuilder.Entity("TripPlanningService.Domain.Models.Trip", b =>
                 {
+                    b.Navigation("Collaborators");
+
                     b.Navigation("Days");
                 });
 #pragma warning restore 612, 618

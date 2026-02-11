@@ -26,7 +26,7 @@ namespace TripPlanningService.Api.Endpoints
 
                 var command = new CreateTripCommand(dto);
 
-                var result = await sender.Send(command); // ✅ correct
+                var result = await sender.Send(command);
 
                 return Results.Ok(result);
             });

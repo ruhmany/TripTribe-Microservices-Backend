@@ -12,22 +12,6 @@ namespace TripPlanningService.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Collaborators",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TripCollaborators", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Trips",
                 columns: table => new
                 {
@@ -42,7 +26,9 @@ namespace TripPlanningService.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,7 +45,9 @@ namespace TripPlanningService.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,24 +61,25 @@ namespace TripPlanningService.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TripCollaboratos",
+                name: "TripsCollaborators",
                 columns: table => new
                 {
-                    CollaboratorsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TripsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TripId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TripTripCollaborator", x => new { x.CollaboratorsId, x.TripsId });
+                    table.PrimaryKey("PK_TripsCollaborators", x => new { x.Id, x.TripId });
                     table.ForeignKey(
-                        name: "FK_TripTripCollaborator_TripCollaborators_CollaboratorsId",
-                        column: x => x.CollaboratorsId,
-                        principalTable: "Collaborators",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TripTripCollaborator_Trips_TripsId",
-                        column: x => x.TripsId,
+                        name: "FK_TripsCollaborators_Trips_TripId",
+                        column: x => x.TripId,
                         principalTable: "Trips",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -115,7 +104,9 @@ namespace TripPlanningService.Infrastructure.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -139,9 +130,9 @@ namespace TripPlanningService.Infrastructure.Migrations
                 column: "TripId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TripCollaborators_TripsId",
-                table: "TripCollaboratos",
-                column: "TripsId");
+                name: "IX_TripsCollaborators_TripId",
+                table: "TripsCollaborators",
+                column: "TripId");
         }
 
         /// <inheritdoc />
@@ -151,13 +142,10 @@ namespace TripPlanningService.Infrastructure.Migrations
                 name: "Activities");
 
             migrationBuilder.DropTable(
-                name: "TripTripCollaborator");
+                name: "TripsCollaborators");
 
             migrationBuilder.DropTable(
                 name: "ItineraryDays");
-
-            migrationBuilder.DropTable(
-                name: "TripCollaborators");
 
             migrationBuilder.DropTable(
                 name: "Trips");

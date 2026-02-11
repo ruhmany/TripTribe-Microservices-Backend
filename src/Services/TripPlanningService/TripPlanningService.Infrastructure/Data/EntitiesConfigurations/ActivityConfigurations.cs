@@ -31,12 +31,11 @@
                     .HasColumnName("Location_Latitude")
                     .IsRequired();
 
-                loc.Property(l => l.Longitude)  // Fixed: was Latitude again
+                loc.Property(l => l.Longitude)
                     .HasColumnName("Location_Longitude")
                     .IsRequired();
             });
 
-            // EstimatedCost owned entity
             builder.ComplexProperty(a => a.EstimatedCost, money =>
             {
                 money.Property(m => m.Amount)
