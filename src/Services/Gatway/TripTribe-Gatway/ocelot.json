@@ -1,0 +1,55 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7000"
+  },
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/gateway/trip",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/Trips",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip",
+      "UpstreamHttpMethod": [ "put" ],
+      "DownstreamPathTemplate": "/Trips",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/visibility",
+      "UpstreamHttpMethod": [ "put" ],
+      "DownstreamPathTemplate": "/Trips/Visibility",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/publish",
+      "UpstreamHttpMethod": [ "put" ],
+      "DownstreamPathTemplate": "/Trips/publish",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
+    }
+  ]
+}

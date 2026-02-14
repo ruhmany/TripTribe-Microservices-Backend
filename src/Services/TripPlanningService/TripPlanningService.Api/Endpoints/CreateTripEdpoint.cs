@@ -1,10 +1,4 @@
-﻿using Azure.Core;
-using Carter;
-using MediatR;
-using TripPlanningService.Application.CQRS.Commands;
-using TripPlanningService.Application.DTOs;
-
-namespace TripPlanningService.Api.Endpoints
+﻿namespace TripPlanningService.Api.Endpoints
 {
 
     public record CreateTripRequest(CreateTripDTO CreateTripDTO);
@@ -17,6 +11,7 @@ namespace TripPlanningService.Api.Endpoints
             {
                 var dto = new CreateTripDTO(
                     request.CreateTripDTO.ownerId,
+                    request.CreateTripDTO.createdBy,
                     request.CreateTripDTO.title,
                     request.CreateTripDTO.description,
                     request.CreateTripDTO.visibility,

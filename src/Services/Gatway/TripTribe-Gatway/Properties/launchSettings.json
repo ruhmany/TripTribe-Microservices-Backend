@@ -4,16 +4,16 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:3804",
-      "sslPort": 44388
+      "applicationUrl": "http://localhost:25329",
+      "sslPort": 44323
     }
   },
   "profiles": {
-    "https": {
+    "TripTribe-Gateway": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "https://localhost:7001",
+      "applicationUrl": "https://localhost:7000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

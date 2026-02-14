@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using TripPlanningService.Infrastructure.Data.Interceptors;
 
 namespace TripPlanningService.Infrastructure.Data
 {

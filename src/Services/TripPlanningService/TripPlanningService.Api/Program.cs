@@ -24,7 +24,6 @@ namespace TripPlanningService.Api
 
             app.UseHttpsRedirection();
 
-
             app.MapCarter();
 
             app.Run();

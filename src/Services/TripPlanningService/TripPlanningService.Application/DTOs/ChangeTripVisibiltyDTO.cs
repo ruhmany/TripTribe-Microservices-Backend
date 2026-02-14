@@ -7,6 +7,5 @@ using TripPlanningService.Domain.Enums;
 
 namespace TripPlanningService.Application.DTOs
 {
-    public record CreateTripDTO(Guid ownerId, string createdBy, string title,
-            string description, TripVisibility visibility, TripStatus status, DateOnly Start, DateOnly End);
+    public record ChangeTripVisibiltyDTO(Guid tripId, Guid ownerId, TripVisibility Visibility);  
 }

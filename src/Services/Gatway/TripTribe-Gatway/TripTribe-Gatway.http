@@ -1,0 +1,6 @@
+@TripTribe_Gatway_HostAddress = http://localhost:5078
+
+GET {{TripTribe_Gatway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

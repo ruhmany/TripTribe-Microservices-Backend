@@ -2,3 +2,8 @@
 global using TripPlanningService.Domain.Models;
 global using BuildingBlocks.CQRS;
 global using TripPlanningService.Application.DTOs;
+global using TripPlanningService.Application.CQRS.Commands.TripCommands;
+global using TripPlanningService.Application.Data;
+global using FluentValidation;
+global using TripPlanningService.Domain.Enums;
+global using TripPlanningService.Domain.ValueObjects;

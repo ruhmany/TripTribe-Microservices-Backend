@@ -16,7 +16,7 @@
         public IReadOnlyCollection<TripCollaborator> Collaborators => _collaborators;
 
         #region Trip Functions
-        public static Trip Create(TripId tripId, TripOwnerId ownerId, string title,
+        public static Trip Create(TripId tripId, TripOwnerId ownerId, string createBy, string title,
             string description, TripVisibility visibility, TripStatus status, DateRange dateRange)
         {
             if (ownerId == null)
@@ -35,6 +35,8 @@
                 Visibility = visibility,
                 Status = status,
                 DateRange = dateRange,
+                CreatedBy = createBy,
+                LastModifiedBy = createBy,
             };
             trip.AddDomainEvent(new TripCreatedEvent(trip));
             return trip;
@@ -63,19 +65,22 @@
             AddDomainEvent(new TripDateChangedEvent(Id, newRange.Start, newRange.End));
         }
 
-        public void Publish()
+        public void Publish(TripOwnerId tripOwnerId)
         {
             if (!_days.Any())
                 throw new DomainException("Trip must have at least one day before publishing");
+            if(tripOwnerId.Value != OwnerId.Value) throw new DomainException("Only the trip owner can publish the trip");
 
             Status = TripStatus.Published;
             AddDomainEvent(new TripPublishedEvent(Id));
         }
 
-        public void ChangeVisibility(TripVisibility visibility)
+        public void ChangeVisibility(TripOwnerId tripOwnerId, TripVisibility visibility)
         {
             if (Status == TripStatus.Published && visibility == TripVisibility.VisableToOnlyMe)  // Fixed typo
                 throw new DomainException("Published trips cannot be made private");
+
+            if(tripOwnerId.Value != OwnerId.Value) throw new DomainException("Only the trip owner can change visibility");
 
             Visibility = visibility;
             AddDomainEvent(new VisibilityChangedEvent(Id, visibility));

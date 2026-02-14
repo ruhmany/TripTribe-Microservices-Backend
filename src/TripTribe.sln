@@ -19,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripPlanningService.Applica
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripPlanningService.Api", "Services\TripPlanningService\TripPlanningService.Api\TripPlanningService.Api.csproj", "{F0C7A1A6-2D40-7AF1-FF5D-9A2425D9FDC9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{4F82ED2C-2FD0-4347-905A-FF6BFF1D29CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripTribe-Gatway", "Services\Gatway\TripTribe-Gatway\TripTribe-Gatway.csproj", "{49E3FC03-C636-4B80-A8B1-841DD0105032}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,10 @@ Global
 		{F0C7A1A6-2D40-7AF1-FF5D-9A2425D9FDC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0C7A1A6-2D40-7AF1-FF5D-9A2425D9FDC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0C7A1A6-2D40-7AF1-FF5D-9A2425D9FDC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49E3FC03-C636-4B80-A8B1-841DD0105032}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E3FC03-C636-4B80-A8B1-841DD0105032}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E3FC03-C636-4B80-A8B1-841DD0105032}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49E3FC03-C636-4B80-A8B1-841DD0105032}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,6 +64,8 @@ Global
 		{AD86E607-3941-403A-AF6B-C5CE7BFA9F4B} = {18AC85BE-F907-4D6D-B392-C0626C3BF122}
 		{DEA75209-662E-438A-B7FF-65F94BE5A1C3} = {18AC85BE-F907-4D6D-B392-C0626C3BF122}
 		{F0C7A1A6-2D40-7AF1-FF5D-9A2425D9FDC9} = {18AC85BE-F907-4D6D-B392-C0626C3BF122}
+		{4F82ED2C-2FD0-4347-905A-FF6BFF1D29CB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{49E3FC03-C636-4B80-A8B1-841DD0105032} = {4F82ED2C-2FD0-4347-905A-FF6BFF1D29CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F41C69F5-01B9-4559-8F4E-BDB6540F7DA0}
