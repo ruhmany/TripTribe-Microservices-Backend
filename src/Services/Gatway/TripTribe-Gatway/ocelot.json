@@ -50,6 +50,30 @@
           "Port": "7001"
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/Trips",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/user-trips",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/Trips/UserTrips",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
     }
   ]
 }

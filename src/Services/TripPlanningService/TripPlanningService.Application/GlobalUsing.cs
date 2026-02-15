@@ -7,3 +7,5 @@ global using TripPlanningService.Application.Data;
 global using FluentValidation;
 global using TripPlanningService.Domain.Enums;
 global using TripPlanningService.Domain.ValueObjects;
+global using TripPlanningService.Application.CQRS.Queries.TripQueries;
+global using TripPlanningService.Application.Extensions;

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-namespace TripPlanningService.Api.Endpoints
+namespace TripPlanningService.Api.Endpoints.TripEndpoints
 {
     public record UpdateTripRequest(UpdateTripDetailsDTO UpdateTripDTO);
     public class UpdateTripEndpoint : ICarterModule

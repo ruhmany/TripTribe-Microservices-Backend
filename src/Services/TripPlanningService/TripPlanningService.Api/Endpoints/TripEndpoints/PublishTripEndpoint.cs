@@ -1,5 +1,4 @@
-﻿
-namespace TripPlanningService.Api.Endpoints
+﻿namespace TripPlanningService.Api.Endpoints.TripEndpoints
 {
     public class PublishTripEndpoint : ICarterModule
     {

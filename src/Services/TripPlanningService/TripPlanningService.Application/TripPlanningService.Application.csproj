@@ -16,9 +16,4 @@
     <ProjectReference Include="..\TripPlanningService.Domain\TripPlanningService.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CQRS\QueriesHandlers\" />
-    <Folder Include="CQRS\Queries\" />
-  </ItemGroup>
-
 </Project>

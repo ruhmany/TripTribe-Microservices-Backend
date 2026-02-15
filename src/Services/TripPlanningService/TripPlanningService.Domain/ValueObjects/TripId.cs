@@ -11,7 +11,7 @@
             ArgumentNullException.ThrowIfNull(value);
             if (value == Guid.Empty)
             {
-                throw new DomainException("OrderId cannot be empty.");
+                throw new DomainException("TripId cannot be empty.");
             }
 
             return new TripId(value);

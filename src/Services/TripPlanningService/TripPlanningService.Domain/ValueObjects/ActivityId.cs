@@ -17,7 +17,7 @@ namespace TripPlanningService.Domain.ValueObjects
             ArgumentNullException.ThrowIfNull(value);
             if (value == Guid.Empty)
             {
-                throw new DomainException("OrderId cannot be empty.");
+                throw new DomainException("ActivityId cannot be empty.");
             }
 
             return new ActivityId(value);
