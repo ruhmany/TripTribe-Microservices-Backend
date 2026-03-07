@@ -3,7 +3,7 @@
 
     public record CreateTripRequest(CreateTripDTO CreateTripDTO);
 
-    public class CreateTripEdpoint : ICarterModule
+    public class CreateTripEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {

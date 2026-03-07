@@ -74,6 +74,18 @@
           "Port": "7001"
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/change-trip-date-range",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamPathTemplate": "/Trips/ChangeDateRange",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
     }
   ]
 }

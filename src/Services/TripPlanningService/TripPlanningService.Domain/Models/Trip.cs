@@ -60,6 +60,8 @@
                 throw new DomainException("Cannot change dates of a published trip");
             if (newRange == null)
                 throw new DomainException("Date range is required");
+            if (newRange.TotalDays < 0)
+                throw new DomainException("The range is not valid");
 
             DateRange = newRange;
             AddDomainEvent(new TripDateChangedEvent(Id, newRange.Start, newRange.End));
