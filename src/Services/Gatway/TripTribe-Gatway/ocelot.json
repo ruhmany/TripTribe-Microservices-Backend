@@ -86,6 +86,30 @@
           "Port": "7001"
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/add-day-to-tip",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/Trips/AddDay",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/remove-day-from-trip",
+      "UpstreamHttpMethod": [ "delete" ],
+      "DownstreamPathTemplate": "/Trips/RemoveDay",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
     }
   ]
 }

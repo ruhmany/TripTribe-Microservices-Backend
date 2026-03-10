@@ -1,4 +1,6 @@
-﻿namespace TripPlanningService.Application.CQRS.Commands.TripCommands
+﻿using TripPlanningService.Application.DTOs.TripDTOs;
+
+namespace TripPlanningService.Application.CQRS.Commands.TripCommands
 {
     public record ChangeTripVisibilityResult(Guid tripId, TripVisibility Visibility);
     public record ChangeTripVisibilityCommand(ChangeTripVisibiltyDTO changeTripVisibilty) : ICommand<ChangeTripVisibilityResult>

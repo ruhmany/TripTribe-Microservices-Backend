@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TripPlanningService.Domain.Enums;
 
-namespace TripPlanningService.Application.DTOs
+namespace TripPlanningService.Application.DTOs.TripDTOs
 {
     public record ChangeTripVisibiltyDTO(Guid tripId, Guid ownerId, TripVisibility Visibility);  
 }

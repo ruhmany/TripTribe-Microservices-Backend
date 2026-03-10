@@ -1,4 +1,6 @@
-﻿namespace TripPlanningService.Api.Endpoints.TripEndpoints
+﻿using TripPlanningService.Application.DTOs.TripDTOs;
+
+namespace TripPlanningService.Api.Endpoints.TripEndpoints
 {
     public class PublishTripEndpoint : ICarterModule
     {

@@ -1,4 +1,6 @@
-﻿namespace TripPlanningService.Application.CQRS.QueriesHandlers.TripQueriesHandlers
+﻿using TripPlanningService.Application.DTOs.TripDTOs;
+
+namespace TripPlanningService.Application.CQRS.QueriesHandlers.TripQueriesHandlers
 {
     public class GetTripsByOwnerIdQueryHandler(IApplicationDbContext dbContext) : IQueryHandler<GetTripsByOwnerIdQuery, List<GetTripDetailsDTO>>
     {

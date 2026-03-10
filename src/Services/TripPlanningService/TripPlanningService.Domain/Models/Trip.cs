@@ -42,8 +42,10 @@
             return trip;
         }
 
-        public void UpdateDetails(string title, string description)
+        public void UpdateDetails(string title, string description, TripOwnerId tripOwnerId)
         {
+            EnsureOwnership(tripOwnerId);
+
             if (Status == TripStatus.Published)
                 throw new DomainException("Cannot edit a published trip");
             if (string.IsNullOrWhiteSpace(title))
@@ -54,8 +56,10 @@
             AddDomainEvent(new TripUpdatedEvent(Id, title, description));
         }
 
-        public void ChangeDateRange(DateRange newRange)
+        public void ChangeDateRange(DateRange newRange, TripOwnerId ownerId)
         {
+            EnsureOwnership(ownerId);
+
             if (Status == TripStatus.Published)
                 throw new DomainException("Cannot change dates of a published trip");
             if (newRange == null)
@@ -69,9 +73,9 @@
 
         public void Publish(TripOwnerId tripOwnerId)
         {
+            EnsureOwnership(tripOwnerId);
             if (!_days.Any())
                 throw new DomainException("Trip must have at least one day before publishing");
-            if(tripOwnerId.Value != OwnerId.Value) throw new DomainException("Only the trip owner can publish the trip");
 
             Status = TripStatus.Published;
             AddDomainEvent(new TripPublishedEvent(Id));
@@ -79,10 +83,10 @@
 
         public void ChangeVisibility(TripOwnerId tripOwnerId, TripVisibility visibility)
         {
-            if (Status == TripStatus.Published && visibility == TripVisibility.VisableToOnlyMe)  // Fixed typo
+            EnsureOwnership(tripOwnerId);
+            if (Status == TripStatus.Published && visibility == TripVisibility.VisableToOnlyMe)
                 throw new DomainException("Published trips cannot be made private");
 
-            if(tripOwnerId.Value != OwnerId.Value) throw new DomainException("Only the trip owner can change visibility");
 
             Visibility = visibility;
             AddDomainEvent(new VisibilityChangedEvent(Id, visibility));
@@ -90,8 +94,10 @@
         #endregion
 
         #region ItineraryDay Functions
-        public void AddDay(DateOnly date)
+        public void AddDay(DateOnly date, TripOwnerId ownerId)
         {
+            EnsureOwnership(ownerId);
+            
             EnsureEditable();
 
             if (date < DateRange.Start || date > DateRange.End)
@@ -100,13 +106,15 @@
             if (_days.Any(d => d.Date == date))
                 throw new DomainException("Day already exists");
 
-            var day = ItineraryDay.Create(ItineraryDayId.Of(new Guid()), date, Id);
+            var day = ItineraryDay.Create(ItineraryDayId.Of(Guid.NewGuid()), date, Id);
             _days.Add(day);
             AddDomainEvent(new DayAddedEvent(Id, day.Id, date));
         }
 
-        public void RemoveDay(ItineraryDayId dayId)  // Changed from Guid
+        public ItineraryDay RemoveDay(ItineraryDayId dayId, TripOwnerId tripOwnerId)  // Changed from Guid
         {
+            EnsureOwnership(tripOwnerId);
+
             EnsureEditable();
 
             var day = _days.FirstOrDefault(d => d.Id == dayId)
@@ -117,6 +125,7 @@
 
             _days.Remove(day);
             AddDomainEvent(new DayRemovedEvent(Id, dayId));
+            return day;
         }
         #endregion
 
@@ -211,6 +220,12 @@
         {
             if (Status == TripStatus.Published)
                 throw new DomainException("Published trip cannot be modified");
+        }
+
+        private void EnsureOwnership(TripOwnerId ownerId)
+        {
+            if (OwnerId != ownerId)
+                throw new DomainException("Only the trip owner can perform this action");
         }
         #endregion
     }

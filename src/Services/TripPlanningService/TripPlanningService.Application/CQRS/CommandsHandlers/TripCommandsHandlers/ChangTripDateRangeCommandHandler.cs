@@ -17,11 +17,9 @@ namespace TripPlanningService.Application.CQRS.CommandsHandlers.TripCommandsHand
             var ownerId = TripOwnerId.Of(request.DateRange.ownerId);
             if (trip.OwnerId != ownerId) throw new DomainException("You are not authrized to modify on any property of this trip");
             var dateRange = new DateRange(request.DateRange.StartAt, request.DateRange.EndAt);
-            trip.ChangeDateRange(dateRange);
+            trip.ChangeDateRange(dateRange, ownerId);
             await dbContext.SaveChangesAsync(cancellationToken);
             return new ChangeTripDateRangeResult(trip.Id.Value, trip.Title, trip.DateRange.Start, trip.DateRange.End);
         }
-
-
     }
 }

@@ -9,3 +9,6 @@ global using TripPlanningService.Domain.Enums;
 global using TripPlanningService.Domain.ValueObjects;
 global using TripPlanningService.Application.CQRS.Queries.TripQueries;
 global using TripPlanningService.Application.Extensions;
+global using TripPlanningService.Application.CQRS.Commands.DayCommands;
+global using TripPlanningService.Application.DTOs.TripDayDTOs;
+

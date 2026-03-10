@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using TripPlanningService.Application.DTOs.TripDTOs;
 
 namespace TripPlanningService.Application.CQRS.Commands.TripCommands
 {

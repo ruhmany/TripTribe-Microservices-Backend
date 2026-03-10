@@ -1,4 +1,6 @@
 ﻿
+using TripPlanningService.Application.DTOs.TripDTOs;
+
 namespace TripPlanningService.Api.Endpoints.TripEndpoints
 {
     public class ChangeDateRangeEndpoint : ICarterModule
