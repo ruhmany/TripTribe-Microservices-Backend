@@ -6,7 +6,7 @@ namespace TripPlanningService.Application.CQRS.CommandsHandlers.DayCommandsHandl
         public async Task<RemoveDayFromTripResult> Handle(RemoveDayFromTripCommand request, CancellationToken cancellationToken)
         {
             var tripId = TripId.Of(request.RemoveDayFromTripDTO.tripId);
-            var trip = await dbContext.Trips.FindAsync(tripId);
+            var trip = await dbContext.Trips.Include(x=> x.Days).FirstOrDefaultAsync(t => t.Id == tripId);
             if (trip == null)
                 throw new KeyNotFoundException("Trip not found");
             var ownerId = TripOwnerId.Of(request.RemoveDayFromTripDTO.ownerId);

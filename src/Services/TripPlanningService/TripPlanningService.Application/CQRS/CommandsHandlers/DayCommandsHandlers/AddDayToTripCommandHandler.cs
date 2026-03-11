@@ -11,7 +11,7 @@
             var ownerId = TripOwnerId.Of(request.AddDayToTripDTO.ownerId);
             trip.AddDay(request.AddDayToTripDTO.Date, ownerId);
             await dbContext.SaveChangesAsync(cancellationToken);
-            return new AddDayToTripResult(trip.Id.Value, trip.Days.Last().Id.Value, request.AddDayToTripDTO.Date);
+            return new AddDayToTripResult(trip.Days.Last().Id.Value, trip.Id.Value, request.AddDayToTripDTO.Date);
         }
     }
 }

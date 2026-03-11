@@ -119,9 +119,13 @@
 
             var day = _days.FirstOrDefault(d => d.Id == dayId)
                 ?? throw new DomainException("Day not found");
+            
 
             if (day.Activities.Any())
                 throw new DomainException("Cannot remove a day that contains activities");
+
+            if (day.IsDeleted.Value)
+                throw new DomainException("Day is already removed");
 
             _days.Remove(day);
             AddDomainEvent(new DayRemovedEvent(Id, dayId));
