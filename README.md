@@ -27,12 +27,15 @@ TripTribe is a **travel social network** where exploration is a team sport. You 
 
 At its core, TripTribe lets you:
 
-- **Post trip plans** — not just memories, but structured, forkable, shareable itineraries
+- **Post trip plans** — structured, forkable, versioned itineraries with a community confidence score
 - **React & contribute** — comment, rate, and actively improve others' plans
 - **Fork & remix** — take someone's Tokyo itinerary and adapt it to your own pace and budget
-- **Find your tribe** — connect with travelers heading to the same destination on the same day
-- **Hire local guides** — vetted, community-rated insiders who know the city like no app ever could
-- **Earn your rank** — a multi-category rewards system turns exploration into progression
+- **Plan in real time** — collaborative planning rooms let friend groups build itineraries together
+- **Find your tribe** — smart-matched travelers heading to the same destination on the same day
+- **Hire local guides** — vetted, community-rated insiders who publish their own trip plans
+- **Earn your rank** — a multi-category progression system with real-world travel perks
+- **Track your world** — a living map of everywhere you've been, building expertise as you go
+- **Journal your journey** — post-trip logs that enrich plans with ground-truth experience
 
 ---
 
@@ -40,7 +43,7 @@ At its core, TripTribe lets you:
 
 ### 🗺️ Trip Plans & Social Layer
 
-Trip plans are the atomic unit of TripTribe. Each plan is a structured, versioned document — not just a note, but a living itinerary that the community can engage with.
+Trip plans are the atomic unit of TripTribe. Each plan is a structured, versioned document — not just a note, but a living itinerary the community can engage with, improve, and fork.
 
 | Action | Description |
 |--------|-------------|
@@ -51,15 +54,36 @@ Trip plans are the atomic unit of TripTribe. Each plan is a structured, versione
 | **Contribute** | Suggest edits to an existing plan; the owner can accept or reject |
 | **Rate** | Star-based rating system for completed plans, weighted by contributor expertise |
 
-> **Proposed Enhancement:** Plans could include a "confidence score" — a community-driven metric combining rating count, fork count, and contributor diversity. High-confidence plans surface in recommendations.
+#### Plan Confidence Score
+
+Every plan carries a **Confidence Score** — a community-driven quality signal computed from:
+
+- Total rating count and average star rating
+- Number of times the plan has been forked
+- Contributor diversity (how many distinct users have meaningfully improved it)
+- Recency of the last accepted contribution
+
+High-confidence plans surface prominently in recommendations and search results. A plan with 200 forks and 50 contributors signals something fundamentally different from a plan with a single 5-star rating from the author's friend.
+
+#### Plan Templates Marketplace
+
+Community-curated, parameterized trip templates let users publish reusable itinerary blueprints — for example, *"10 Days in Southeast Asia, ~$50/day Budget"* or *"72-Hour Layover in Istanbul."* Templates can be instantiated and personalized, lowering the barrier to planning for first-time visitors to a destination.
+
+#### Travel Journal
+
+After completing a trip, users can attach a **Travel Journal** to the plan they followed. Journal entries record actual vs. planned comparisons — what worked, what changed, what surprised. These journals are visible to future forkers, turning a static plan into a living document enriched by real experience over time.
+
+#### Collaborative Planning Rooms
+
+Friend groups can co-build a plan in real time using **Planning Rooms** — a SignalR-powered shared editing space where multiple users can add stops, vote on activities, and negotiate the itinerary simultaneously. Changes stream live, and the final plan saves with full contributor attribution.
 
 ---
 
 ### 🏆 Reward & Rank System
 
-TripTribe features three independent progression tracks. Each track has its own **titles**, **stages**, and **real-world perks** in the form of hotel and flight discounts unlocked at milestone stages.
+TripTribe features three independent progression tracks for social engagement. Each track has its own **titles**, **stages**, and **real-world perks** — hotel and flight discounts unlocked at milestone stages.
 
-#### Progression Tracks
+#### Social Progression Tracks
 
 ```
 POSTER TRACK              REACTOR TRACK             CONTRIBUTOR TRACK
@@ -67,82 +91,121 @@ POSTER TRACK              REACTOR TRACK             CONTRIBUTOR TRACK
 Stage 1 · Dreamer         Stage 1 · Observer        Stage 1 · Helper
 Stage 2 · Planner         Stage 2 · Enthusiast      Stage 2 · Editor
 Stage 3 · Trailblazer     Stage 3 · Critic          Stage 3 · Co-author
-Stage 4 · Cartographer    Stage 4 · Curator          Stage 4 · Architect
+Stage 4 · Cartographer    Stage 4 · Curator         Stage 4 · Architect
 Stage 5 · Legend          Stage 5 · Tastemaker      Stage 5 · Mastermind
 ```
 
-Points are accumulated by:
+Points accumulate by:
 
-- **Poster Track** — Publishing plans, receiving forks, accumulating plan ratings, plan views
-- **Reactor Track** — Reacting to plans, leaving rated comments, engaging with content regularly
+- **Poster Track** — Publishing plans, receiving forks, accumulating plan ratings and views
+- **Reactor Track** — Reacting to plans, leaving rated comments, sustained engagement
 - **Contributor Track** — Fork submissions, accepted edits, quality contributions endorsed by plan owners
 
-> **Proposed Enhancement:** A **combined "Explorer Score"** — a composite metric across all three tracks — could unlock a fourth prestige tier with exclusive partnership benefits.
+#### Explorer Score — Prestige Tier
+
+Beyond the three individual tracks, TripTribe computes a single **Explorer Score** — a composite metric across Poster, Reactor, and Contributor ranks. Reaching the top of the Explorer Score unlocks a **fourth prestige tier** with exclusive benefits: partner certification, priority placement in recommendation surfaces, and access to limited-run discount programs with airlines and hotel chains.
 
 ---
 
-### 🌍 World Traveler Plans
+### 🌍 World Traveler Progression
 
-TripTribe tracks your real travel history and generates dynamic progression milestones based on it.
+TripTribe tracks your real travel history and generates dynamic progression milestones based on it. Two exploration philosophies are equally rewarded: the wide collector (visiting 80 countries once each) and the deep diver (returning to the same places until they feel like home).
 
-- **Country count** — visiting more unique countries unlocks World Traveler tier titles
-- **Repeat visits** — visiting the same country multiple times builds **Country Expert** status
-- **City depth** — frequent visits to a specific city elevate you to **City Expert**, granting your reviews additional weight and visibility
-
-This creates two exploration philosophies equally rewarded on the platform: the wide collector (100 countries, 1 visit each) and the deep diver (10 countries, true insider knowledge).
+#### Traveler Milestones
 
 | Milestone | Trigger | Benefit |
 |-----------|---------|---------|
 | Country Curious | 5 countries visited | Unlock Country Expert tracking |
+| Wanderer | 15 countries | World map profile feature |
 | World Explorer | 25 countries | Featured profile badge |
 | Global Citizen | 50 countries | Exclusive partner discounts |
-| Country Expert | 3+ visits to same country | Reviews weighted 1.5× |
-| City Expert | 5+ visits to same city | "Local Insight" badge on posts |
+| Century Club | 100 countries | Prestige badge + platform recognition |
+
+#### Country & City Expertise
+
+- **Country Expert** — 3+ visits to the same country. Reviews and plan ratings from that country are weighted 1.5×, and the badge is shown on all content from that destination.
+- **City Expert** — 5+ visits to the same city. Grants a *"Local Insight"* badge on posts from that city and elevated discoverability in guide searches.
+
+Expertise is additive: a user who is both a Country Expert in Japan and a City Expert in Kyoto carries compounded authority on content about that destination.
 
 ---
 
 ### 🤝 Trip Friend Matching
 
-TripTribe can match you with other travelers in two scenarios:
+TripTribe matches you with other travelers in two scenarios:
 
-1. **Same plan, different journey** — travelers following the same (or forked) plan
+1. **Same plan, different journey** — travelers following the same plan or a fork of it
 2. **Same destination, same date** — travelers with overlapping itineraries to a city or country
 
-Matched users can connect, share tips, split guides, or simply know there's a familiar face at the destination. Matching is opt-in per-plan.
+#### Compatibility Filtering
 
-> **Proposed Enhancement:** Add a **compatibility filter** — travel style tags (budget, luxury, solo, family, adventure, relaxed) let users opt into matches with aligned preferences rather than just overlapping logistics.
+Matching goes beyond logistics. Users set **travel style tags** on each plan — from a set including Budget, Mid-range, Luxury, Solo, Couple, Family, Adventure, Relaxed, Cultural, Foodie, and Nightlife — and the matching algorithm surfaces travelers with aligned preferences. You won't be matched with a backpacker on a shoestring if you're on a boutique hotel itinerary, unless you opt in.
+
+Matched users can connect, share tips, split guide costs, or simply know there's a familiar face at the destination. Matching is opt-in per-plan and can be paused at any time.
 
 ---
 
 ### 🧭 Local Guide Marketplace
 
-TripTribe allows locals to register as guides for their city or region. Foreigners who complete a guided experience can rate the guide — ratings are visible, persistent, and affect guide discoverability.
+Locals can register as guides for their city or region. Foreigners who complete a guided experience can rate the guide — ratings are visible, persistent, and directly affect guide discoverability.
 
-Guide progression is its own track:
+#### Guide Progression Track
 
-- The more sessions a guide completes, the higher their **Guide Rank**
-- Rank levels unlock profile prominence, reduced platform fees, and partner certification badges
-- **City Expert** status from personal travel boosts a guide's perceived authority in that city
+```
+GUIDE TRACK
+──────────────────────────
+Stage 1 · Local Friend
+Stage 2 · Neighborhood Pro
+Stage 3 · City Voice
+Stage 4 · Cultural Ambassador
+Stage 5 · Legendary Host
+```
 
-> **Proposed Enhancement:** Allow guides to create **public trip plans** as marketing material — a guide's plan for "48 Hours in Marrakech" becomes both a content post and a booking call-to-action.
+- Each completed session advances the guide's rank
+- Higher ranks unlock profile prominence, reduced platform fees, and partner certification badges
+- **City Expert** status from personal travel boosts a guide's authority in their home city — a guide who has also explored their own city as a traveler brings a different kind of insight
+
+#### Guide-Published Trip Plans
+
+Guides can publish **public trip plans** as content and as marketing. A guide's plan for *"48 Hours in Marrakech: the insider route"* is simultaneously a high-quality content post, a signal of expertise, and a direct booking call-to-action. Their Guide Rank and City Expert status give these plans elevated visibility in search.
+
+#### Expert AMA Sessions
+
+City Experts and top-ranked guides can host scheduled **Ask Me Anything** threads — structured Q&A sessions tied to a destination or theme. AMAs drive platform engagement, surface niche knowledge that doesn't fit a plan format, and build the guide's public profile between bookings.
 
 ---
 
 ### 📊 Expertise & Ranking System
 
-Every action on TripTribe feeds into a unified expertise model:
+Every meaningful action on TripTribe feeds into one or more progression tracks:
 
 | Activity | Rank Category |
 |----------|---------------|
 | Posting plans | Poster Rank |
+| Plans receiving forks | Poster Rank |
 | Reacting to plans | Reactor Rank |
-| Contributing / forking | Contributor Rank |
+| Leaving rated comments | Reactor Rank |
+| Contributing accepted edits | Contributor Rank |
+| Fork submissions approved | Contributor Rank |
 | Guiding sessions completed | Guide Rank |
 | Countries visited | World Traveler Rank |
 | Repeat country visits | Country Expert Rank |
 | Repeat city visits | City Expert Rank |
+| Cross-track composite | Explorer Score (Prestige) |
 
-Each category has multiple **levels within each rank stage**, creating a granular sense of progression. The total system is designed so that every traveler — whether they're a prolific poster, a meticulous contributor, a world wanderer, or a deep local expert — has a meaningful path.
+Each category has multiple **levels within each stage**, creating granular progression — users always have a next milestone within reach. The total system is designed so every traveler — prolific poster, meticulous contributor, world wanderer, or deep local expert — has a meaningful and rewarding path forward.
+
+---
+
+### 🌱 Carbon Footprint Tracking
+
+TripTribe includes an opt-in **carbon footprint estimator** per plan. Based on transportation legs (flights, trains, buses, car), each plan displays an estimated CO₂ footprint alongside the itinerary. Users can compare footprint across plan variants and make informed choices. Plans with a low footprint relative to distance can earn a *Sustainable Travel* badge, visible on the plan card in search results.
+
+---
+
+### 📡 Offline Mode
+
+Trip plans can be downloaded as **offline bundles** — a compressed snapshot of the itinerary, maps, guide contacts, and journal entries for use without connectivity. This is critical for destinations with unreliable data coverage, and aligns with how travel actually works: you're often offline exactly when you need the plan most.
 
 ---
 
@@ -161,26 +224,27 @@ TripTribe is built on a **microservices architecture** following Clean Architect
                          ┌────────────▼───────────────┐
                          │     API Gateway (Ocelot)    │
                          │       TripTribe-Gateway      │
-                         └─────────────┬──────────────┘
-                                       │
-          ┌──────────┬─────────────────┼─────────────────┬──────────────┐
-          │          │                 │                  │              │
-   ┌──────▼─┐  ┌─────▼──────┐  ┌──────▼──────┐  ┌───────▼───┐  ┌──────▼──────┐
-   │  User  │  │Trip Planning│  │  Story/Social│  │  Booking  │  │Notification │
-   │ Service│  │  Service   │  │   Service    │  │  Service  │  │   Service   │
-   └────────┘  └────────────┘  └─────────────┘  └───────────┘  └─────────────┘
-          │          │                 │                  │              │
-   ┌──────▼─┐  ┌─────▼──────┐  ┌──────▼──────┐  ┌───────▼───┐  ┌──────▼──────┐
-   │ SQL DB │  │  SQL DB    │  │   SQL DB    │  │  SQL DB   │  │  Message    │
-   └────────┘  └────────────┘  └─────────────┘  └───────────┘  │   Broker   │
-                                                                 └─────────────┘
-                                                  ┌────────────────────────────┐
-                                                  │  Recommendation Service    │
-                                                  │   (AI / Smart Suggestions) │
-                                                  └────────────────────────────┘
-                                                  ┌────────────────────────────┐
-                                                  │       Media Service        │
-                                                  └────────────────────────────┘
+                         └──────────┬─────────────────┘
+                                    │
+     ┌──────────┬───────────────────┼──────────────────┬──────────────┐
+     │          │                   │                   │              │
+┌────▼───┐ ┌────▼────────┐ ┌───────▼──────┐ ┌─────────▼──┐ ┌────────▼─────┐
+│  User  │ │Trip Planning│ │ Story/Social  │ │  Booking   │ │Notification  │
+│Service │ │  Service    │ │   Service     │ │  Service   │ │  Service     │
+└────────┘ └─────────────┘ └──────────────┘ └────────────┘ └──────────────┘
+     │          │                   │                   │              │
+┌────▼───┐ ┌────▼────────┐ ┌───────▼──────┐ ┌─────────▼──┐ ┌────────▼─────┐
+│ SQL DB │ │   SQL DB    │ │    SQL DB     │ │   SQL DB   │ │   Message    │
+└────────┘ └─────────────┘ └──────────────┘ └────────────┘ │    Broker    │
+                                                             └──────────────┘
+                            ┌─────────────────────────────────────────────┐
+                            │           Recommendation Service             │
+                            │   (AI / Smart Suggestions · ML.NET / Azure) │
+                            └─────────────────────────────────────────────┘
+                            ┌─────────────────────────────────────────────┐
+                            │                Media Service                 │
+                            │     (CDN · Blob Storage · Offline Bundles)  │
+                            └─────────────────────────────────────────────┘
 ```
 
 ### Microservices
@@ -197,26 +261,26 @@ TripTribe is built on a **microservices architecture** following Clean Architect
 
 | Service | Responsibilities |
 |---------|-----------------|
-| **User Management Service** | Registration, authentication, profiles, traveler stats, expertise tracking, rank computation |
-| **Story / Social Service** | Reactions, comments, ratings, activity feed, follower graph |
-| **Recommendation Service** | AI-powered plan suggestions, trip friend matching, guide matching, destination recommendations |
-| **Booking / Integration Service** | Partner hotel & flight APIs, discount code generation, reward redemption |
-| **Notification Service** | Push, email, and in-app notifications for social events and reward milestones |
-| **Media Service** | Photo/video upload, CDN management, plan media galleries |
+| **User Management Service** | Registration, auth, profiles, traveler stats, expertise tracking, rank computation, Explorer Score |
+| **Story / Social Service** | Reactions, comments, ratings, activity feed, follower graph, AMA sessions, Planning Rooms (SignalR) |
+| **Recommendation Service** | AI plan suggestions, trip friend matching with compatibility scoring, guide matching, destination recommendations, confidence score computation |
+| **Booking / Integration Service** | Partner hotel & flight APIs, discount code generation, reward redemption, carbon footprint estimation |
+| **Notification Service** | Push, email, and in-app notifications for social events, rank milestones, match alerts, AMA reminders |
+| **Media Service** | Photo/video upload, CDN management, plan media galleries, offline bundle generation |
 
 ---
 
 ## Technology Stack
 
-### Backend
+### Backend (Current)
 
 | Technology | Purpose |
 |------------|---------|
-| **.NET 8.0** | Core runtime |
-| **ASP.NET Core Web API** | REST endpoints across all services |
+| **.NET 8.0** | Core runtime across all services |
+| **ASP.NET Core Web API** | REST endpoints |
 | **Entity Framework Core** | ORM with code-first migrations |
 | **Ocelot** | API Gateway — routing, aggregation, rate limiting |
-| **MediatR** | CQRS implementation — commands, queries, events |
+| **MediatR** | CQRS implementation — commands, queries, domain events |
 | **AutoMapper** | DTO ↔ domain model mapping |
 | **SQL Server** | Primary relational datastore |
 | **Docker** | Containerization and local orchestration |
@@ -228,15 +292,16 @@ TripTribe is built on a **microservices architecture** following Clean Architect
 - **Domain Events** — cross-service communication via events for loose coupling
 - **Repository Pattern** — abstracted data access within each service boundary
 
-### Proposed Additions
+### Planned Infrastructure Additions
 
 | Technology | Purpose |
 |------------|---------|
-| **Redis** | Session cache, leaderboard snapshots, rank computation cache |
-| **RabbitMQ / Azure Service Bus** | Async inter-service messaging for events and notifications |
-| **Elasticsearch** | Full-text plan search, destination indexing |
-| **Azure Blob Storage / S3** | Media storage for the Media Service |
-| **ML.NET or Azure AI** | Recommendation engine, trip friend compatibility scoring |
+| **Redis** | Session cache, leaderboard snapshots, rank computation cache, Planning Room state |
+| **RabbitMQ / Azure Service Bus** | Async inter-service messaging — domain events, notifications, match triggers |
+| **SignalR** | Real-time collaborative Planning Rooms and live plan activity feeds |
+| **Elasticsearch** | Full-text plan search, destination indexing, template marketplace search |
+| **Azure Blob Storage / S3** | Media storage and offline bundle hosting |
+| **ML.NET or Azure AI** | Recommendation engine, trip friend compatibility scoring, confidence score modeling |
 
 ---
 
@@ -262,12 +327,12 @@ TripTribe/
 │   ├── Domain/                      # Entities, value objects, domain events, exceptions
 │   └── Infrastructure/             # EF Core, migrations, repositories
 │
-├── UserManagementService/           # [Planned]
-├── StorySocialService/              # [Planned]
-├── RecommendationService/           # [Planned]
-├── BookingIntegrationService/       # [Planned]
-├── NotificationService/             # [Planned]
-├── MediaService/                    # [Planned]
+├── UserManagementService/           # [Planned] Auth, profiles, ranks, Explorer Score
+├── StorySocialService/              # [Planned] Feed, reactions, comments, AMA, Planning Rooms
+├── RecommendationService/           # [Planned] AI suggestions, matching, confidence scores
+├── BookingIntegrationService/       # [Planned] Partners, discounts, carbon tracking
+├── NotificationService/             # [Planned] Push, email, in-app, match alerts
+├── MediaService/                    # [Planned] Uploads, CDN, offline bundles
 │
 └── docker-compose.yml
 ```
@@ -310,24 +375,6 @@ dotnet ef database update
 ```
 
 The Gateway will be available at `http://localhost:5000`. Individual service Swagger UIs are accessible in development mode on their native ports.
-
----
-
-## Proposed Feature Enhancements
-
-Beyond the core roadmap, the following features could meaningfully extend the platform:
-
-**Collaborative Planning Rooms** — Real-time multi-user plan editing using SignalR, letting friend groups build an itinerary together simultaneously.
-
-**Plan Templates Marketplace** — Community-curated, parameterized trip templates (e.g. "10 Days in Southeast Asia, ~$50/day Budget") that users can instantiate and personalize.
-
-**Travel Journal** — A post-trip log tied to an executed plan. Journal entries enrich the plan with actual vs. planned comparisons, visible to future forkers.
-
-**Expert AMA Sessions** — City Experts and top-ranked local guides can host scheduled Q&A threads, driving engagement and surfacing niche knowledge.
-
-**Carbon Footprint Tracking** — An opt-in feature that estimates and displays the carbon footprint of a plan's transportation choices, encouraging eco-conscious itinerary design.
-
-**Offline Mode** — Downloaded plan bundles for use without connectivity, critical for destinations with unreliable data coverage.
 
 ---
 
