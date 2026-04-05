@@ -5,3 +5,5 @@ global using TripPlanningService.Application.CQRS.Commands.TripCommands;
 global using TripPlanningService.Application.CQRS.Queries.TripQueries;
 global using TripPlanningService.Application.DTOs.TripDayDTOs;
 global using TripPlanningService.Domain.Exceptions;
+global using TripPlanningService.Application.DTOs.ActivityDTOs;
+global using TripPlanningService.Application.CQRS.Commands.ActivityCommands;

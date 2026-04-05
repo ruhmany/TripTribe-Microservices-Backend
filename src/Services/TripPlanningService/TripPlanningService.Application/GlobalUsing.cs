@@ -1,7 +1,6 @@
 ﻿global using Microsoft.EntityFrameworkCore;
 global using TripPlanningService.Domain.Models;
 global using BuildingBlocks.CQRS;
-global using TripPlanningService.Application.DTOs;
 global using TripPlanningService.Application.CQRS.Commands.TripCommands;
 global using TripPlanningService.Application.Data;
 global using FluentValidation;
@@ -11,4 +10,5 @@ global using TripPlanningService.Application.CQRS.Queries.TripQueries;
 global using TripPlanningService.Application.Extensions;
 global using TripPlanningService.Application.CQRS.Commands.DayCommands;
 global using TripPlanningService.Application.DTOs.TripDayDTOs;
-
+global using TripPlanningService.Application.DTOs.ActivityDTOs;
+global using TripPlanningService.Application.CQRS.Commands.ActivityCommands;

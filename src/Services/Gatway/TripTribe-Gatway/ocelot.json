@@ -110,6 +110,18 @@
           "Port": "7001"
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/add-activity-to-day",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/Trips/AddActivity",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
     }
   ]
 }

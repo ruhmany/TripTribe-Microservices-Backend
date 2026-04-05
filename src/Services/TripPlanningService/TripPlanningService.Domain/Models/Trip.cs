@@ -134,9 +134,11 @@
         #endregion
 
         #region Activity Functions
-        public void AddActivity(ItineraryDayId dayId, Activity activity)
+        public void AddActivity(ItineraryDayId dayId, TripOwnerId tripOwnerId, Activity activity)
         {
             EnsureEditable();
+
+            EnsureOwnership(tripOwnerId);
 
             if (activity == null)
                 throw new ArgumentNullException(nameof(activity));
