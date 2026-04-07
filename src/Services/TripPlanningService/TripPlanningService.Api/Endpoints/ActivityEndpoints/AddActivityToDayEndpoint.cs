@@ -4,7 +4,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("Trips/AddActivity", async (AddActivityToDayDTO addActivityToDayDTO, ISender sender) =>
+            app.MapPost("Trips/AddActivity", async (AddEditActivityToDayDTO addActivityToDayDTO, ISender sender) =>
             {
                 try
                 {

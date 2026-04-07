@@ -148,12 +148,14 @@
             AddDomainEvent(new ActivityAddedEvent(Id, dayId, activity.Id));
         }
 
-        public void UpdateActivity(ItineraryDayId dayId, ActivityId activityId, string title, string notes)  // Changed
+        public void UpdateActivity(ItineraryDayId dayId, ActivityId activityId, TripOwnerId tripOwnerId, string title, string notes, TimeOnly startTime, TimeOnly endTime, ActivityType activityType, Money money, Location location)  // Changed
         {
             EnsureEditable();
 
+            EnsureOwnership(tripOwnerId);
+
             var day = GetDay(dayId);
-            day.UpdateActivity(activityId, title, notes);
+            day.UpdateActivity(activityId, title, notes, startTime, endTime, activityType, money, location);
             AddDomainEvent(new ActivityUpdatedEvent(Id, dayId, activityId));
         }
 
@@ -166,9 +168,11 @@
         //    AddDomainEvent(new ActivityReorderedEvent(Id, dayId, activityId, newPosition));
         //}
 
-        public void RemoveActivity(ItineraryDayId dayId, ActivityId activityId)  // Changed
+        public void RemoveActivity(ItineraryDayId dayId, ActivityId activityId, TripOwnerId ownerId)  // Changed
         {
             EnsureEditable();
+
+            EnsureOwnership(ownerId);
 
             var day = GetDay(dayId);
             day.RemoveActivity(activityId);

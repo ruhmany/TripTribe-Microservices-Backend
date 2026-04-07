@@ -26,12 +26,12 @@ namespace TripPlanningService.Domain.Models
             _activities.Add(activity);
         }
 
-        public void UpdateActivity(ActivityId activityId, string title, string notes)
+        public void UpdateActivity(ActivityId activityId, string title, string notes, TimeOnly startTime, TimeOnly endTime, ActivityType activityType, Money money, Location location)
         {
             var activity = GetActivityById(activityId);
-            if (activity != null)
+            if (activity == null)
                 throw new DomainException("No Activity With This Id");
-            activity.UpdateActivity(title, notes);
+            activity.UpdateActivity(title, notes, startTime, endTime, activityType, money, location);
         }
 
         public void RemoveActivity(ActivityId activityid)
@@ -44,7 +44,7 @@ namespace TripPlanningService.Domain.Models
 
         private Activity GetActivityById(ActivityId id)
         {
-            var activity = _activities.FirstOrDefault(x => x.Id.Value == id.Value);
+            var activity = _activities.FirstOrDefault(x => x.Id == id);
             return activity;
         }
     }

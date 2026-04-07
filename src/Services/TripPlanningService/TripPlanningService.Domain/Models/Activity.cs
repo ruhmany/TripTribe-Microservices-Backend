@@ -26,11 +26,15 @@
             };
         }
 
-        public void UpdateActivity(string title, string notes)
+        public void UpdateActivity(string title, string notes, TimeOnly startTime, TimeOnly endTime, ActivityType activityType, Money money, Location location)
         {
             ModelValidations(title, notes);
             Title = title;
             Notes = notes;
+            StartTime = startTime;
+            EndTime = endTime;
+            EstimatedCost = money;
+            Location = location;
         }
 
         private static void ModelValidations(string title, string notes)

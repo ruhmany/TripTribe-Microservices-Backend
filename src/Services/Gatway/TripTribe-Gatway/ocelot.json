@@ -122,6 +122,18 @@
           "Port": "7001"
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/update-activity",
+      "UpstreamHttpMethod": [ "put" ],
+      "DownstreamPathTemplate": "/Trips/UpdateActivity",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
     }
   ]
 }

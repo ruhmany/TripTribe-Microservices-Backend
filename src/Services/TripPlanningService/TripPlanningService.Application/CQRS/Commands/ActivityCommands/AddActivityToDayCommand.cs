@@ -1,6 +1,6 @@
 ﻿namespace TripPlanningService.Application.CQRS.Commands.ActivityCommands
 {
-    public record AddActivityToDayCommand(AddActivityToDayDTO AddActivityToDayDTO) : ICommand<bool>
+    public record AddActivityToDayCommand(AddEditActivityToDayDTO AddActivityToDayDTO) : ICommand<bool>
     {
     }
 }
