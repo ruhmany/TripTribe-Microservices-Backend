@@ -134,6 +134,18 @@
           "Port": "7001"
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/remove-activity",
+      "UpstreamHttpMethod": [ "delete" ],
+      "DownstreamPathTemplate": "/Trips/RemoveActivity",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
     }
   ]
 }

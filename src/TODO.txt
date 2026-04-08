@@ -1,0 +1,5 @@
+1- Implement middleware for logging requests and responses in the API.
+2- Add error handling middleware to catch and respond to errors gracefully.
+3- Implement repository pattern for data access to improve maintainability and testability.
+4- Refactor the existing codebase to follow SOLID principles for better code organization and readability.
+4- refactor the business logic
