@@ -1,4 +1,6 @@
-﻿namespace TripPlanningService.Domain.Models
+﻿using TripPlanningService.Domain.Events.CollaboratorEvents;
+
+namespace TripPlanningService.Domain.Models
 {
     public class Trip : Aggregate<TripId>
     {
@@ -10,6 +12,7 @@
         public DateRange DateRange { get; private set; }
 
         private readonly List<ItineraryDay> _days = new();
+
         private readonly List<TripCollaborator> _collaborators = new();
 
         public IReadOnlyCollection<ItineraryDay> Days => _days;
@@ -196,26 +199,34 @@
             AddDomainEvent(new CollaboratorAddedEvent(Id, userId, role));
         }
 
-        public void RemoveCollaborator(TripCollaboratorId userId)
+        public void RemoveCollaborator(TripCollaboratorId collaboratorId, TripOwnerId ownerId)
         {
             EnsureEditable();
 
-            var collab = _collaborators.FirstOrDefault(c => c.Id == userId)
-                ?? throw new DomainException("Collaborator not found");
+            EnsureOwnership(ownerId);
+
+            var collab = EnsureCollaboratorActionIllegible(collaboratorId);
 
             _collaborators.Remove(collab);
-            AddDomainEvent(new CollaboratorRemovedEvent(Id, userId));
+            AddDomainEvent(new CollaboratorRemovedEvent(Id, collaboratorId));
         }
 
-        public void ChangeCollaboratorRole(TripCollaboratorId userId, TripRole newRole)
+        public void UnSubscripeFromTrip(TripCollaboratorId collaboratorId)
+        {
+            var collab = EnsureCollaboratorActionIllegible(collaboratorId);
+
+            _collaborators.Remove(collab);
+            AddDomainEvent(new CollaboratorUnSubscripedEvent(Id, collaboratorId));
+        }
+
+        public void ChangeCollaboratorRole(TripCollaboratorId collaboratorId, TripRole newRole)
         {
             EnsureEditable();
 
-            var collab = _collaborators.FirstOrDefault(c => c.Id == userId)
-                ?? throw new DomainException("Collaborator not found");
+            var collab = EnsureCollaboratorActionIllegible(collaboratorId);
 
             collab.ChangeRole(newRole);
-            AddDomainEvent(new CollaboratorRoleChangedEvent(Id, userId, newRole));
+            AddDomainEvent(new CollaboratorRoleChangedEvent(Id, collaboratorId, newRole));
         }
         #endregion
 
@@ -236,6 +247,13 @@
         {
             if (OwnerId != ownerId)
                 throw new DomainException("Only the trip owner can perform this action");
+        }
+
+        private TripCollaborator EnsureCollaboratorActionIllegible(TripCollaboratorId collaboratorId)
+        {
+            var collab = _collaborators.FirstOrDefault(c => c.Id == collaboratorId)
+                ?? throw new DomainException("Collaborator not found");
+            return collab;
         }
         #endregion
     }

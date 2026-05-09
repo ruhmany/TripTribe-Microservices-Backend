@@ -146,6 +146,30 @@
           "Port": "7001"
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/add-collaborator",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/Trips/AddCollaborator",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/trip/remove-collaborator",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/Trips/RemoveCollaborator",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7001"
+        }
+      ]
     }
   ]
 }
