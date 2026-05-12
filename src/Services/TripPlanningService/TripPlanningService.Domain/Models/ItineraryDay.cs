@@ -37,7 +37,7 @@ namespace TripPlanningService.Domain.Models
         public void RemoveActivity(ActivityId activityid)
         {
             var activity = GetActivityById(activityid);
-            if (activity != null)
+            if (activity == null)
                 throw new DomainException("No Activity With This Id");
             _activities.Remove(activity);
         }

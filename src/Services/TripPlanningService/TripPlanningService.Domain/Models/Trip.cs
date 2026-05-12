@@ -87,7 +87,7 @@ namespace TripPlanningService.Domain.Models
         public void ChangeVisibility(TripOwnerId tripOwnerId, TripVisibility visibility)
         {
             EnsureOwnership(tripOwnerId);
-            if (Status == TripStatus.Published && visibility == TripVisibility.VisableToOnlyMe)
+            if (Status == TripStatus.Published && visibility == TripVisibility.VisibleToOnlyMe)
                 throw new DomainException("Published trips cannot be made private");
 
 
