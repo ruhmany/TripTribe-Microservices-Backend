@@ -205,15 +205,15 @@ namespace TripPlanningService.Domain.Models
 
             EnsureOwnership(ownerId);
 
-            var collab = EnsureCollaboratorActionIllegible(collaboratorId);
+            var collab = EnsureCollaboratorActionEligibleEligible(collaboratorId);
 
             _collaborators.Remove(collab);
             AddDomainEvent(new CollaboratorRemovedEvent(Id, collaboratorId));
         }
 
-        public void UnSubscripeFromTrip(TripCollaboratorId collaboratorId)
+        public void UnsubscribeFromTrip(TripCollaboratorId collaboratorId)
         {
-            var collab = EnsureCollaboratorActionIllegible(collaboratorId);
+            var collab = EnsureCollaboratorActionEligibleEligible(collaboratorId);
 
             _collaborators.Remove(collab);
             AddDomainEvent(new CollaboratorUnSubscripedEvent(Id, collaboratorId));
@@ -223,7 +223,7 @@ namespace TripPlanningService.Domain.Models
         {
             EnsureEditable();
 
-            var collab = EnsureCollaboratorActionIllegible(collaboratorId);
+            var collab = EnsureCollaboratorActionEligibleEligible(collaboratorId);
 
             collab.ChangeRole(newRole);
             AddDomainEvent(new CollaboratorRoleChangedEvent(Id, collaboratorId, newRole));
@@ -249,7 +249,7 @@ namespace TripPlanningService.Domain.Models
                 throw new DomainException("Only the trip owner can perform this action");
         }
 
-        private TripCollaborator EnsureCollaboratorActionIllegible(TripCollaboratorId collaboratorId)
+        private TripCollaborator EnsureCollaboratorActionEligibleEligible(TripCollaboratorId collaboratorId)
         {
             var collab = _collaborators.FirstOrDefault(c => c.Id == collaboratorId)
                 ?? throw new DomainException("Collaborator not found");
