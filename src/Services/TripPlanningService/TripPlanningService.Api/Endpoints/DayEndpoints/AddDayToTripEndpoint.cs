@@ -1,4 +1,4 @@
-﻿namespace TripPlanningService.Api.Endpoints.DayEndpoints
+namespace TripPlanningService.Api.Endpoints.DayEndpoints
 {
     public class AddDayToTripEndpoint : ICarterModule
     {
@@ -6,21 +6,11 @@
         {
             app.MapPost("Trips/AddDay", async (AddDayToTripDTO addDayToTripDTO, ISender sender) =>
             {
-                try
-                {
-                    var command = new AddDayToTripCommand(addDayToTripDTO);
-                    var result = await sender.Send(command);
-                    return Results.Ok(result);
-                }
-                catch (KeyNotFoundException ex)
-                {
-                    return Results.NotFound(ex.Message);
-                }
-                catch (DomainException ex)
-                {
-                    return Results.BadRequest(ex.Message);
-                }
-             });
+                var command = new AddDayToTripCommand(addDayToTripDTO);
+                var result = await sender.Send(command);
+                return Results.Created($"/Trips?tripId={result.tripId}",
+                    ApiResponse<AddDayToTripResult>.Success(result, "Day added to trip successfully.", StatusCodes.Status201Created));
+            });
         }
     }
 }

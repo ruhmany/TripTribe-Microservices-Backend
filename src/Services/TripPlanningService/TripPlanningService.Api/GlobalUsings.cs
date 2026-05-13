@@ -1,4 +1,4 @@
-﻿global using Carter;
+global using Carter;
 global using MediatR;
 global using TripPlanningService.Application.CQRS.Commands.DayCommands;
 global using TripPlanningService.Application.CQRS.Commands.TripCommands;
@@ -7,3 +7,4 @@ global using TripPlanningService.Application.DTOs.TripDayDTOs;
 global using TripPlanningService.Domain.Exceptions;
 global using TripPlanningService.Application.DTOs.ActivityDTOs;
 global using TripPlanningService.Application.CQRS.Commands.ActivityCommands;
+global using BuildingBlocks.ApiResponse;

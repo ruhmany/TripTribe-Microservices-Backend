@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using TripPlanningService.Application.DTOs.TripDTOs;
 
 namespace TripPlanningService.Api.Endpoints.TripEndpoints
 {
@@ -10,7 +11,7 @@ namespace TripPlanningService.Api.Endpoints.TripEndpoints
             {
                 var query = new GetTripDetailsQuery(tripId);
                 var result = await sender.Send(query);
-                return Results.Ok(result);
+                return Results.Ok(ApiResponse<GetTripDetailsDTO>.Success(result, "Trip details retrieved successfully."));
             });
         }
     }

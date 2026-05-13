@@ -1,4 +1,5 @@
 
+using BuildingBlocks.Exceptions.Handler;
 using Carter;
 using TripPlanningService.Application;
 using TripPlanningService.Infrastructure;
@@ -14,7 +15,12 @@ namespace TripPlanningService.Api
             builder.Services.AddApplicationServices();
             builder.Services.AddCarter();
 
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
+
             var app = builder.Build();
+
+            app.UseExceptionHandler(opt => { });
 
             if (app.Environment.IsDevelopment())
             {

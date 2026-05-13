@@ -1,4 +1,4 @@
-﻿using TripPlanningService.Application.DTOs.TripDTOs;
+using TripPlanningService.Application.DTOs.TripDTOs;
 
 namespace TripPlanningService.Api.Endpoints.TripEndpoints
 {
@@ -25,7 +25,8 @@ namespace TripPlanningService.Api.Endpoints.TripEndpoints
 
                 var result = await sender.Send(command);
 
-                return Results.Ok(result);
+                return Results.Created($"/Trips?tripId={result.Id}",
+                    ApiResponse<CreateTripResult>.Success(result, "Trip created successfully.", StatusCodes.Status201Created));
             });
         }
     }

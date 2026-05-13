@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TripPlanningService.Api.Endpoints.ActivityEndpoints
 {
@@ -10,7 +10,7 @@ namespace TripPlanningService.Api.Endpoints.ActivityEndpoints
             {
                 var command = new RemoveActivityFromDayCommand(requestDTO.tripId, requestDTO.dayId, requestDTO.activityId, requestDTO.ownerId);
                 await mediator.Send(command);
-                return Results.NoContent();
+                return Results.Ok(ApiResponse.Success("Activity removed from day successfully."));
             });
         }
         private record RemoveActivityFromDayDTO(Guid tripId, Guid dayId, Guid activityId, Guid ownerId);

@@ -1,4 +1,4 @@
-﻿using TripPlanningService.Application.DTOs.TripDTOs;
+using TripPlanningService.Application.DTOs.TripDTOs;
 
 namespace TripPlanningService.Application.CQRS.QueriesHandlers.TripQueriesHandlers
 {
@@ -9,7 +9,7 @@ namespace TripPlanningService.Application.CQRS.QueriesHandlers.TripQueriesHandle
             var tripId = TripId.Of(request.tripId);
             var trip = await dbContext.Trips.Include(t => t.Days).ThenInclude(d => d.Activities).FirstOrDefaultAsync(t => t.Id == tripId);
             if (trip == null)
-                throw new KeyNotFoundException("Trip not found");
+                throw new NotFoundException("Trip", request.tripId);
             return Mapper.MaptripToGetTripDetailsGetTripDetailsDTO(trip);
         }
     }
