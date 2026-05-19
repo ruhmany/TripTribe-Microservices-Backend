@@ -1,4 +1,4 @@
-﻿using TripPlanningService.Application.DTOs.TripDTOs;
+using TripPlanningService.Application.DTOs.TripDTOs;
 
 namespace TripPlanningService.Api.Endpoints.TripEndpoints
 {
@@ -10,7 +10,7 @@ namespace TripPlanningService.Api.Endpoints.TripEndpoints
             {
                 var command = new PublishTripCommand(publishTripDTO);
                 var result = await sender.Send(command);
-                return Results.Ok(result);
+                return Results.Ok(ApiResponse<bool>.Success(result, "Trip published successfully."));
             });
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ namespace TripPlanningService.Application.CQRS.CommandsHandlers.TripCommandsHand
         {
             var tripId = TripId.Of(request.changeTripVisibilty.tripId);
             var trip = await dbContext.Trips.FirstOrDefaultAsync(t => t.Id == tripId);
-            if (trip == null) throw new KeyNotFoundException("Trip not found"); 
+            if (trip == null) throw new NotFoundException("Trip", request.changeTripVisibilty.tripId); 
             var ownerId = TripOwnerId.Of(request.changeTripVisibilty.ownerId);
             trip.ChangeVisibility(ownerId, request.changeTripVisibilty.Visibility); 
             await dbContext.SaveChangesAsync(cancellationToken); return new ChangeTripVisibilityResult(trip.Id.Value, trip.Visibility);

@@ -1,4 +1,4 @@
-﻿
+
 namespace TripPlanningService.Application.CQRS.CommandsHandlers.DayCommandsHandlers
 {
     public class RemoveDayFromtripCommandHandler(IApplicationDbContext dbContext) : ICommandHandler<RemoveDayFromTripCommand, RemoveDayFromTripResult>
@@ -8,7 +8,7 @@ namespace TripPlanningService.Application.CQRS.CommandsHandlers.DayCommandsHandl
             var tripId = TripId.Of(request.RemoveDayFromTripDTO.tripId);
             var trip = await dbContext.Trips.Include(x=> x.Days).FirstOrDefaultAsync(t => t.Id == tripId);
             if (trip == null)
-                throw new KeyNotFoundException("Trip not found");
+                throw new NotFoundException("Trip", request.RemoveDayFromTripDTO.tripId);
             var ownerId = TripOwnerId.Of(request.RemoveDayFromTripDTO.ownerId);
             var dayId = ItineraryDayId.Of(request.RemoveDayFromTripDTO.dayId);
             var day = trip.RemoveDay(dayId, ownerId);

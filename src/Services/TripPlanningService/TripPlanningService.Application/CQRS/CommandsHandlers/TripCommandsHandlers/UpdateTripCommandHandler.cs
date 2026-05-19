@@ -1,4 +1,4 @@
-﻿using TripPlanningService.Domain.ValueObjects;
+using TripPlanningService.Domain.ValueObjects;
 
 namespace TripPlanningService.Application.CQRS.CommandsHandlers.TripCommandsHandlers
 {
@@ -8,7 +8,7 @@ namespace TripPlanningService.Application.CQRS.CommandsHandlers.TripCommandsHand
         {
             var tripdId = TripId.Of(request.TripUpdateDetailsDTO.tripId);
             var trip = await dbContext.Trips.FirstOrDefaultAsync(t => t.Id == tripdId);
-            if (trip == null) throw new KeyNotFoundException("Trip not found");
+            if (trip == null) throw new NotFoundException("Trip", request.TripUpdateDetailsDTO.tripId);
             TripOwnerId ownerId = TripOwnerId.Of(request.TripUpdateDetailsDTO.ownerId);
             trip.UpdateDetails(request.TripUpdateDetailsDTO.title, request.TripUpdateDetailsDTO.description, ownerId);
             await dbContext.SaveChangesAsync(cancellationToken);

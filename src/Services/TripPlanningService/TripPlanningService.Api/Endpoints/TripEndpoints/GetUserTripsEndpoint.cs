@@ -1,5 +1,6 @@
-﻿
+
 using Microsoft.AspNetCore.Mvc;
+using TripPlanningService.Application.DTOs.TripDTOs;
 
 namespace TripPlanningService.Api.Endpoints.TripEndpoints
 {
@@ -11,7 +12,7 @@ namespace TripPlanningService.Api.Endpoints.TripEndpoints
             {
                 var command = new GetTripsByOwnerIdQuery(userId);
                 var result = await sender.Send(command);
-                return Results.Ok(result);
+                return Results.Ok(ApiResponse<List<GetTripDetailsDTO>>.Success(result, "User trips retrieved successfully."));
             });
         }
     }

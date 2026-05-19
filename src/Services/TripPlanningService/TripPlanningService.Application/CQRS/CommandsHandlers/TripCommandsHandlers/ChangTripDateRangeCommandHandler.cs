@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace TripPlanningService.Application.CQRS.CommandsHandlers.TripCommandsHand
         {
             var tripId = TripId.Of(request.DateRange.TripId);
             var trip = await dbContext.Trips.FindAsync(tripId);
-            if (trip == null) throw new DomainException("Trip not found");   
+            if (trip == null) throw new NotFoundException("Trip", request.DateRange.TripId);   
             var ownerId = TripOwnerId.Of(request.DateRange.ownerId);
             if (trip.OwnerId != ownerId) throw new DomainException("You are not authrized to modify on any property of this trip");
             var dateRange = new DateRange(request.DateRange.StartAt, request.DateRange.EndAt);

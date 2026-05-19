@@ -1,4 +1,4 @@
-﻿using TripPlanningService.Application.CQRS.Commands.TripCollaboratorCommands;
+using TripPlanningService.Application.CQRS.Commands.TripCollaboratorCommands;
 
 namespace TripPlanningService.Api.Endpoints.CollaboratorsEndpoints
 {
@@ -10,7 +10,7 @@ namespace TripPlanningService.Api.Endpoints.CollaboratorsEndpoints
             {
                 var command = new RemoveCollaboratorCommand(tripOwnerId, tripdId, collaboratorId);
                 var result = await sender.Send(command);
-                return Results.Ok(result);
+                return Results.Ok(ApiResponse<bool>.Success(result, "Collaborator removed successfully."));
             });
         }
     }

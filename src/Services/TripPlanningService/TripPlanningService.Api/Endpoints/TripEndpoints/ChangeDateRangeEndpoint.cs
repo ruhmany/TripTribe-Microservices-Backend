@@ -1,4 +1,4 @@
-﻿
+
 using TripPlanningService.Application.DTOs.TripDTOs;
 
 namespace TripPlanningService.Api.Endpoints.TripEndpoints
@@ -11,7 +11,7 @@ namespace TripPlanningService.Api.Endpoints.TripEndpoints
             {
                 var command = new ChangTripDateRangeCommand(changeTripDateRange);
                 var result = await sender.Send(command);
-                return Results.Ok(result);
+                return Results.Ok(ApiResponse<ChangeTripDateRangeResult>.Success(result, "Trip date range updated successfully."));
             });
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace TripPlanningService.Api.Endpoints.ActivityEndpoints
+namespace TripPlanningService.Api.Endpoints.ActivityEndpoints
 {
     public class UpdateActivityEndpoint : ICarterModule
     {
@@ -8,7 +8,7 @@
             {
                 var command = new UpdateActivityCommand(editActivityDTO);
                 var result = await sender.Send(command);
-                return result ? Results.Ok() : Results.BadRequest();
+                return Results.Ok(ApiResponse<bool>.Success(result, "Activity updated successfully."));
             }).WithTags("Activities");
         }
     }

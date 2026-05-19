@@ -1,6 +1,5 @@
-﻿
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using TripPlanningService.Application.DTOs.TripDTOs;
 
 namespace TripPlanningService.Api.Endpoints.TripEndpoints
@@ -14,7 +13,7 @@ namespace TripPlanningService.Api.Endpoints.TripEndpoints
             {
                 var command = new UpdateTripDetailsCommand(updateTripRequest.UpdateTripDTO);
                 var result = await sender.Send(command);
-                return Results.Ok(result);
+                return Results.Ok(ApiResponse<UpdateTripResult>.Success(result, "Trip updated successfully."));
             });
         }
     }
