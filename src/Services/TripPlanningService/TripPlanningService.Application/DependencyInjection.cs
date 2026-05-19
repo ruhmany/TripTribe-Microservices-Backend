@@ -15,7 +15,7 @@ namespace TripPlanningService.Application
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
 
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            // services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;
         }
