@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Clock, DollarSign, Check, Circle } from 'lucide-react';
 import { ActivityTypeLabels, ActivityTypeColors } from '../../data/mockData';
 
-export default function ActivityCheckpoint({ activity, activityId, isCompleted, onToggle, index = 0 }) {
+export default function ActivityCheckpoint({ activity, activityId, isCompleted, onToggle, onCreatePost, index = 0 }) {
   const typeLabel = ActivityTypeLabels[activity.type] || 'Other';
   const typeColor = ActivityTypeColors[activity.type] || 'hsl(0, 0%, 55%)';
 
@@ -177,6 +177,36 @@ export default function ActivityCheckpoint({ activity, activityId, isCompleted, 
                 <MapPin size={11} />
                 {activity.location}
               </div>
+            )}
+
+            {/* Create Post Button when checked */}
+            {isCompleted && onCreatePost && (
+              <motion.div 
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ marginTop: 'var(--space-3)' }}
+              >
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => onCreatePost(activity)}
+                  style={{
+                    fontSize: '11px',
+                    padding: '4px var(--space-3)',
+                    background: 'hsla(205, 85%, 45%, 0.1)',
+                    border: '1px solid hsla(205, 85%, 45%, 0.2)',
+                    color: 'var(--primary-300)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    borderRadius: 'var(--border-radius-full)',
+                    cursor: 'pointer'
+                  }}
+                  type="button"
+                >
+                  Create Post
+                </button>
+              </motion.div>
             )}
           </div>
         </div>

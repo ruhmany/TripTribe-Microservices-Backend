@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { tripService, checkpointService } from '../services/api';
+import { tripService, checkpointService, postService } from '../services/api';
 import { TripStatusLabels, TripStatusColors, ActivityTypeLabels, ActivityTypeColors } from '../data/mockData';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, Clock, DollarSign, GitFork, Star, Heart, MessageCircle, Share2, Users, ArrowLeft, Award } from 'lucide-react';
 import ActivityCheckpoint from '../components/trip/ActivityCheckpoint';
+import CreatePostModal from '../components/trip/CreatePostModal';
 
 export default function TripDetail() {
   const { tripId } = useParams();
   const [trip, setTrip] = useState(null);
   const [checkpoints, setCheckpoints] = useState({});
+  const [postCreationActivity, setPostCreationActivity] = useState(null);
 
   useEffect(() => {
     tripService.getTripDetails(tripId).then(setTrip);
@@ -43,6 +45,10 @@ export default function TripDetail() {
       ...prev,
       [activityId]: updatedState,
     }));
+  };
+
+  const handlePostCreated = async (postData) => {
+    await postService.createPost(postData);
   };
 
   // Completion calculation
@@ -157,6 +163,7 @@ export default function TripDetail() {
                           activityId={activityId}
                           isCompleted={isCompleted}
                           onToggle={handleToggleCheckpoint}
+                          onCreatePost={setPostCreationActivity}
                           index={ai}
                         />
                       );
@@ -203,6 +210,13 @@ export default function TripDetail() {
           </div>
         </div>
       </div>
+      <CreatePostModal
+        isOpen={!!postCreationActivity}
+        onClose={() => setPostCreationActivity(null)}
+        activity={postCreationActivity}
+        trip={trip}
+        onPost={handlePostCreated}
+      />
     </div>
   );
 }

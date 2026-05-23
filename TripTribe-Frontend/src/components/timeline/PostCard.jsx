@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Star, MessageCircle, Share2, ChevronDown, ChevronUp } from 'lucide-react';
 import { ActivityTypeLabels, ActivityTypeColors } from '../../data/mockData';
@@ -47,6 +48,7 @@ export default function PostCard({ post, onReaction, onRemoveReaction, onComment
       >
         {/* Header */}
         <div
+          className="post-card-header"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -60,11 +62,12 @@ export default function PostCard({ post, onReaction, onRemoveReaction, onComment
           >
             {post.ownerInitials}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="post-card-header-info" style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
               <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>{post.ownerName}</span>
               <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>·</span>
-              <span
+              <Link
+                to={`/trip/${post.tripId}`}
                 style={{
                   fontSize: 'var(--text-xs)',
                   color: 'var(--primary-300)',
@@ -72,10 +75,12 @@ export default function PostCard({ post, onReaction, onRemoveReaction, onComment
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
+                  textDecoration: 'none',
                 }}
+                className="post-trip-link"
               >
                 {post.tripTitle}
-              </span>
+              </Link>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginTop: '2px' }}>
               <span style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>

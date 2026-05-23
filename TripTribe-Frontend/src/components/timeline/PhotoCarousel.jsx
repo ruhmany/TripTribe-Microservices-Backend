@@ -49,6 +49,8 @@ export default function PhotoCarousel({ photos }) {
               height: 200,
               borderRadius: 'var(--border-radius-md)',
               background: photo.gradient,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
               position: 'relative',
               scrollSnapAlign: 'start',
               flexShrink: 0,

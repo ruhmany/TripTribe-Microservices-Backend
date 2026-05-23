@@ -177,6 +177,25 @@ export const postService = {
     }
     return post ? { shares: post.shares } : null;
   },
+
+  async createPost(postData) {
+    await delay(300);
+    const newPost = {
+      id: `p-${Date.now()}`,
+      reactions: { '❤️': 0, '🔥': 0, '😍': 0, '👏': 0, '🌍': 0, '😂': 0 },
+      userReaction: null,
+      comments: [],
+      shares: 0,
+      postedAt: new Date().toISOString(),
+      engagementScore: 0,
+      ownerId: 'u-001',
+      ownerName: 'Alex Rivera',
+      ownerInitials: 'AR',
+      ...postData,
+    };
+    timelinePosts.unshift(newPost);
+    return newPost;
+  },
 };
 
 // ═══════════════════════════════════════════════════════════════
