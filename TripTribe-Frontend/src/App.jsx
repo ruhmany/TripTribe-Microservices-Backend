@@ -11,6 +11,8 @@ import TripDetail from './pages/TripDetail';
 import CreateTrip from './pages/CreateTrip';
 import Profile from './pages/Profile';
 import Guides from './pages/Guides';
+import Timeline from './pages/Timeline';
+import TripFriends from './pages/TripFriends';
 
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
@@ -46,6 +48,8 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/explore" element={<Explore />} />
+              <Route path="/timeline" element={<Timeline />} />
+              <Route path="/friends" element={<TripFriends />} />
               <Route path="/trip/:tripId" element={<TripDetail />} />
               <Route path="/create-trip" element={<CreateTrip />} />
               <Route path="/profile" element={<Profile />} />
@@ -60,3 +64,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

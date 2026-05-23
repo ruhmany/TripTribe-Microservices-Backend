@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { tripService } from '../services/api';
+import { tripService, checkpointService } from '../services/api';
 import { TripStatusLabels, TripStatusColors, ActivityTypeLabels, ActivityTypeColors } from '../data/mockData';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, Clock, DollarSign, GitFork, Star, Heart, MessageCircle, Share2, Users, ArrowLeft } from 'lucide-react';
+import { Calendar, MapPin, Clock, DollarSign, GitFork, Star, Heart, MessageCircle, Share2, Users, ArrowLeft, Award } from 'lucide-react';
+import ActivityCheckpoint from '../components/trip/ActivityCheckpoint';
 
 export default function TripDetail() {
   const { tripId } = useParams();
   const [trip, setTrip] = useState(null);
+  const [checkpoints, setCheckpoints] = useState({});
 
   useEffect(() => {
     tripService.getTripDetails(tripId).then(setTrip);
+    checkpointService.getCheckpoints(tripId).then(setCheckpoints);
   }, [tripId]);
 
   if (!trip) return (
@@ -32,6 +35,23 @@ export default function TripDetail() {
     const label = ActivityTypeLabels[a.type] || 'Other';
     budgetByType[label] = (budgetByType[label] || 0) + a.money;
   }));
+
+  // Toggle Checkpoint handler
+  const handleToggleCheckpoint = async (activityId) => {
+    const updatedState = await checkpointService.toggleCheckpoint(tripId, activityId);
+    setCheckpoints(prev => ({
+      ...prev,
+      [activityId]: updatedState,
+    }));
+  };
+
+  // Completion calculation
+  const totalActivities = trip.dayDetails.reduce((sum, day) => sum + day.activities.length, 0);
+  const tripIdNum = trip.tripId.replace('t-', '');
+  const completedCount = Object.keys(checkpoints).filter(key => 
+    key.startsWith(`a-${tripIdNum}-`) && checkpoints[key]?.completed
+  ).length;
+  const completionPercentage = totalActivities > 0 ? Math.round((completedCount / totalActivities) * 100) : 0;
 
   return (
     <div className="page-content">
@@ -83,6 +103,35 @@ export default function TripDetail() {
         {/* Timeline */}
         <div>
           <h2 style={{ fontSize: 'var(--text-xl)', marginBottom: 'var(--space-6)' }}>Itinerary</h2>
+
+          {/* Checkpoint Progress Card */}
+          {totalActivities > 0 && (
+            <div className="checkpoint-progress card-glass" style={{ marginBottom: 'var(--space-6)' }}>
+              <div className="checkpoint-progress-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-3)' }}>
+                <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <Award size={16} /> Activity Checkpoints
+                </h3>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>
+                  {completedCount} of {totalActivities} completed ({completionPercentage}%)
+                </span>
+              </div>
+              <div className="checkpoint-progress-bar" style={{ height: '8px', background: 'var(--surface-700)', borderRadius: 'var(--border-radius-full)', overflow: 'hidden' }}>
+                <div 
+                  className={`checkpoint-progress-fill ${completionPercentage === 100 ? 'complete' : ''}`}
+                  style={{ 
+                    width: `${completionPercentage}%`,
+                    height: '100%',
+                    borderRadius: 'var(--border-radius-full)',
+                    background: completionPercentage === 100 
+                      ? 'linear-gradient(90deg, var(--success), hsl(172, 70%, 45%))' 
+                      : 'var(--gradient-primary)',
+                    transition: 'width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
           {trip.dayDetails.length > 0 ? (
             <div className="timeline">
               {trip.dayDetails.map((day, dayIndex) => (
@@ -98,29 +147,20 @@ export default function TripDetail() {
                     Day {dayIndex + 1} — {new Date(day.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
                   </div>
                   <div className="timeline-activities">
-                    {day.activities.map((activity, ai) => (
-                      <div className="activity-card card-glass" key={ai}>
-                        <div className="activity-type-icon" style={{ background: `${ActivityTypeColors[activity.type]}18`, color: ActivityTypeColors[activity.type] }}>
-                          <MapPin size={18} />
-                        </div>
-                        <div className="activity-info" style={{ flex: 1 }}>
-                          <h4>{activity.title}</h4>
-                          <div className="activity-time">
-                            <Clock size={11} /> {activity.startTime} — {activity.endTime}
-                          </div>
-                          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginTop: 'var(--space-1)', lineHeight: 'var(--leading-relaxed)' }}>
-                            {activity.description}
-                          </p>
-                          <div className="activity-details">
-                            <span><MapPin size={11} /> {activity.location}</span>
-                            {activity.money > 0 && <span><DollarSign size={11} /> ${activity.money}</span>}
-                            <span className="badge badge-primary" style={{ fontSize: '10px', padding: '0 6px' }}>
-                              {ActivityTypeLabels[activity.type]}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                    {day.activities.map((activity, ai) => {
+                      const activityId = `a-${tripIdNum}-${dayIndex}-${ai}`;
+                      const isCompleted = !!checkpoints[activityId]?.completed;
+                      return (
+                        <ActivityCheckpoint
+                          key={activityId}
+                          activity={activity}
+                          activityId={activityId}
+                          isCompleted={isCompleted}
+                          onToggle={handleToggleCheckpoint}
+                          index={ai}
+                        />
+                      );
+                    })}
                   </div>
                 </motion.div>
               ))}

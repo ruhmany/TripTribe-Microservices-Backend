@@ -1,17 +1,20 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-  LayoutDashboard, Compass, PlusCircle, Map, Users, BookOpen,
-  ChevronLeft, ChevronRight, LogOut, Sparkles
+  LayoutDashboard, Compass, PlusCircle, Map, Users,
+  ChevronLeft, ChevronRight, LogOut, Sparkles, Rss, User
 } from 'lucide-react';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/explore', icon: Compass, label: 'Explore' },
+  { to: '/timeline', icon: Rss, label: 'Timeline' },
+  { to: '/friends', icon: Users, label: 'Trip Friends' },
   { to: '/create-trip', icon: PlusCircle, label: 'Create Trip' },
   { to: '/guides', icon: Map, label: 'Guides' },
-  { to: '/profile', icon: Users, label: 'Profile' },
+  { to: '/profile', icon: User, label: 'Profile' },
 ];
+
 
 export default function Sidebar({ collapsed, onToggle }) {
   const { user, logout } = useAuth();
