@@ -268,3 +268,131 @@ export const friendService = {
   },
 };
 
+const GATEWAY_URL = 'https://localhost:7000/gateway';
+
+export function getAuthHeaders() {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
+
+export const authService = {
+  async register(email, phoneNumber, password) {
+    const response = await fetch(`${GATEWAY_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, phoneNumber, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Registration failed');
+    }
+
+    return await response.json();
+  },
+
+  async login(email, password) {
+    const response = await fetch(`${GATEWAY_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Login failed');
+    }
+
+    return await response.json();
+  },
+
+  async confirmEmail(email, token) {
+    const response = await fetch(`${GATEWAY_URL}/auth/confirm-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, token }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Email confirmation failed');
+    }
+
+    return await response.json();
+  },
+
+  async confirmPhone(phoneNumber, token) {
+    const response = await fetch(`${GATEWAY_URL}/auth/confirm-phone`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ phoneNumber, token }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Phone confirmation failed');
+    }
+
+    return await response.json();
+  },
+
+  async forgetPassword(email) {
+    const response = await fetch(`${GATEWAY_URL}/auth/forget-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Forget password request failed');
+    }
+
+    return await response.json();
+  },
+
+  async resetPassword(email, token, newPassword) {
+    const response = await fetch(`${GATEWAY_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, token, newPassword }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Reset password failed');
+    }
+
+    return await response.json();
+  },
+
+  async oauthLogin(provider, token) {
+    const response = await fetch(`${GATEWAY_URL}/auth/oauth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ provider, token }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'OAuth login failed');
+    }
+
+    return await response.json();
+  }
+};
+

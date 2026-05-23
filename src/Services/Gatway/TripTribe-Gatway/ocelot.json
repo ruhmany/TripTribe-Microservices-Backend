@@ -170,6 +170,90 @@
           "Port": "7001"
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/register",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/auth/register",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7292"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/login",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/auth/login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7292"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/confirm-email",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/auth/confirm-email",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7292"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/confirm-phone",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/auth/confirm-phone",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7292"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/forget-password",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/auth/forget-password",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7292"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/reset-password",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/auth/reset-password",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7292"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/auth/oauth",
+      "UpstreamHttpMethod": [ "post" ],
+      "DownstreamPathTemplate": "/api/auth/oauth",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7292"
+        }
+      ]
     }
   ]
 }

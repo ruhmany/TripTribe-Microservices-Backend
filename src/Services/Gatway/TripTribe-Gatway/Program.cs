@@ -12,6 +12,16 @@ namespace TripTribe_Gatway
 
             builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             builder.Services.AddOcelot();
 
             builder.Services.AddControllers();
@@ -20,6 +30,8 @@ namespace TripTribe_Gatway
             var app = builder.Build();
 
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
