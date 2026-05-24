@@ -58,22 +58,27 @@ export default function Sidebar({ collapsed, onToggle }) {
         ))}
       </nav>
 
-      {user && (
-        <div className="sidebar-footer">
-          <div className="sidebar-user">
-            <div className="avatar avatar-sm" style={{ background: 'var(--gradient-primary)' }}>
-              {user.initials}
+      {user && (() => {
+        const emailName = user.email ? user.email.split('@')[0] : 'Explorer';
+        const name = user.name || emailName.charAt(0).toUpperCase() + emailName.slice(1);
+        const initials = user.initials || name.substring(0, 2).toUpperCase();
+        return (
+          <div className="sidebar-footer">
+            <div className="sidebar-user">
+              <div className="avatar avatar-sm" style={{ background: 'var(--gradient-primary)' }}>
+                {initials}
+              </div>
+              <div className="sidebar-user-info">
+                <div className="sidebar-user-name">{name}</div>
+                <div className="sidebar-user-role">Explorer</div>
+              </div>
+              <button className="btn-ghost" onClick={logout} aria-label="Log out" style={{ marginLeft: 'auto', padding: '4px' }}>
+                <LogOut size={16} />
+              </button>
             </div>
-            <div className="sidebar-user-info">
-              <div className="sidebar-user-name">{user.name}</div>
-              <div className="sidebar-user-role">Explorer</div>
-            </div>
-            <button className="btn-ghost" onClick={logout} aria-label="Log out" style={{ marginLeft: 'auto', padding: '4px' }}>
-              <LogOut size={16} />
-            </button>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </aside>
   );
 }

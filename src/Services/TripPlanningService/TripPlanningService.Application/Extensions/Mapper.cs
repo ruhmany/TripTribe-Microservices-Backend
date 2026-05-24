@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,10 +15,10 @@ namespace TripPlanningService.Application.Extensions
             foreach (var day in trip.Days)
             {
                 var activitiesDetails = MapToActivityDetails(day);
-                var dayDetail = new TripDayDetails(date: day.Date, activitiesDetails);
+                var dayDetail = new TripDayDetails(dayId: day.Id.Value.ToString(), date: day.Date, activitiesDetails);
                 dayDetails.Add(dayDetail);
             }
-            var tripDetails = new GetTripDetailsDTO(tripId: trip.Id.Value.ToString(), owerId: trip.OwnerId.Value.ToString(), title: trip.Title, details: trip.Description, startDate: trip.DateRange.Start, endDate: trip.DateRange.End, DayDetails: dayDetails);
+            var tripDetails = new GetTripDetailsDTO(tripId: trip.Id.Value.ToString(), owerId: trip.OwnerId.Value.ToString(), title: trip.Title, details: trip.Description, startDate: trip.DateRange.Start, endDate: trip.DateRange.End, status: (int)trip.Status, visibility: (int)trip.Visibility, DayDetails: dayDetails);
             return tripDetails;
         }
         private static List<TripActivityDetails> MapToActivityDetails(ItineraryDay itineraryDay)
@@ -26,7 +26,7 @@ namespace TripPlanningService.Application.Extensions
             var resultList = new List<TripActivityDetails>();
             foreach (var activity in itineraryDay.Activities)
             {
-                var activityDetails = new TripActivityDetails(title: activity.Title, description: activity.Notes, money: activity.EstimatedCost.Amount, location: activity.Location.Name, startTime: activity.StartTime.Value, endTime: activity.EndTime.Value);
+                var activityDetails = new TripActivityDetails(activityId: activity.Id.Value.ToString(), title: activity.Title, description: activity.Notes, money: activity.EstimatedCost.Amount, type: (int)activity.Type, location: activity.Location.Name, startTime: activity.StartTime.Value, endTime: activity.EndTime.Value);
                 resultList.Add(activityDetails);
             }
             return resultList;

@@ -12,16 +12,32 @@ export default function Profile() {
   const { user } = useAuth();
   if (!user) return null;
 
+  const emailName = user.email ? user.email.split('@')[0] : 'Explorer';
+  const name = user.name || emailName.charAt(0).toUpperCase() + emailName.slice(1);
+  const initials = user.initials || name.substring(0, 2).toUpperCase();
+  const bio = user.bio || 'Full-time explorer. Ready to plan new journeys.';
+  const badges = user.badges || ['New Explorer'];
+  const countriesVisited = user.countriesVisited || 0;
+  const citiesVisited = user.citiesVisited || 0;
+  const tripsCreated = user.tripsCreated || 0;
+  const tripsForked = user.tripsForked || 0;
+  const explorerScore = user.explorerScore || 0;
+  const ranks = user.ranks || {
+    poster: { stage: 1, title: 'Novice', progress: 0, points: 0 },
+    reactor: { stage: 1, title: 'Novice', progress: 0, points: 0 },
+    contributor: { stage: 1, title: 'Novice', progress: 0, points: 0 },
+  };
+
   return (
     <div className="page-content">
       {/* Profile Header */}
       <motion.div className="profile-header card-glass" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="profile-avatar">{user.initials}</div>
+        <div className="profile-avatar">{initials}</div>
         <div className="profile-info">
-          <h1>{user.name}</h1>
-          <p>{user.bio}</p>
+          <h1>{name}</h1>
+          <p>{bio}</p>
           <div className="profile-badges">
-            {user.badges.map(b => (
+            {badges.map(b => (
               <span key={b} className="badge badge-primary">
                 <Award size={11} /> {b}
               </span>
@@ -33,11 +49,11 @@ export default function Profile() {
       {/* Stats */}
       <motion.div className="stats-grid" style={{ marginBottom: 'var(--space-8)' }} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         {[
-          { icon: <Globe size={20} />, value: user.countriesVisited, label: 'Countries', color: 'var(--primary-400)' },
-          { icon: <MapPin size={20} />, value: user.citiesVisited, label: 'Cities', color: 'var(--teal-400)' },
-          { icon: <Map size={20} />, value: user.tripsCreated, label: 'Trips', color: 'var(--accent-400)' },
-          { icon: <GitFork size={20} />, value: user.tripsForked, label: 'Forks', color: 'var(--warning)' },
-          { icon: <TrendingUp size={20} />, value: user.explorerScore, label: 'Explorer Score', color: 'hsl(280, 65%, 55%)' },
+          { icon: <Globe size={20} />, value: countriesVisited, label: 'Countries', color: 'var(--primary-400)' },
+          { icon: <MapPin size={20} />, value: citiesVisited, label: 'Cities', color: 'var(--teal-400)' },
+          { icon: <Map size={20} />, value: tripsCreated, label: 'Trips', color: 'var(--accent-400)' },
+          { icon: <GitFork size={20} />, value: tripsForked, label: 'Forks', color: 'var(--warning)' },
+          { icon: <TrendingUp size={20} />, value: explorerScore, label: 'Explorer Score', color: 'hsl(280, 65%, 55%)' },
         ].map((s, i) => (
           <div className="stat-card card-glass" key={i}>
             <div style={{ color: s.color, marginBottom: 'var(--space-2)' }}>{s.icon}</div>
@@ -54,7 +70,7 @@ export default function Profile() {
             <Award size={20} style={{ color: 'var(--warning)' }} /> Rank Progression
           </h2>
 
-          {Object.entries(user.ranks).map(([track, data]) => (
+          {Object.entries(ranks).map(([track, data]) => (
             <div className="rank-track card-glass" key={track}>
               <div className="rank-track-header">
                 <h4 style={{ color: rankColors[track], textTransform: 'capitalize' }}>
@@ -102,7 +118,7 @@ export default function Profile() {
                   stroke="url(#scoreGradient)"
                   strokeDasharray={314}
                   initial={{ strokeDashoffset: 314 }}
-                  animate={{ strokeDashoffset: 314 - (314 * user.explorerScore / 100) }}
+                  animate={{ strokeDashoffset: 314 - (314 * explorerScore / 100) }}
                   transition={{ duration: 1.5, delay: 0.5 }}
                 />
                 <defs>
@@ -112,7 +128,7 @@ export default function Profile() {
                   </linearGradient>
                 </defs>
               </svg>
-              <span className="progress-ring-label gradient-text">{user.explorerScore}</span>
+              <span className="progress-ring-label gradient-text">{explorerScore}</span>
             </div>
             <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginTop: 'var(--space-3)' }}>
               Composite of all rank tracks
@@ -131,7 +147,7 @@ export default function Profile() {
             <div className="world-map-placeholder">
               <div style={{ textAlign: 'center' }}>
                 <Globe size={48} style={{ marginBottom: 'var(--space-3)', opacity: 0.5 }} />
-                <p>{user.countriesVisited} countries explored</p>
+                <p>{countriesVisited} countries explored</p>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginTop: 'var(--space-2)' }}>
                   Interactive world map coming soon
                 </p>
@@ -174,8 +190,8 @@ export default function Profile() {
               {[
                 { name: 'Country Curious', target: 5, achieved: true },
                 { name: 'Wanderer', target: 15, achieved: true },
-                { name: 'World Explorer', target: 25, achieved: false, progress: user.countriesVisited },
-                { name: 'Global Citizen', target: 50, achieved: false, progress: user.countriesVisited },
+                { name: 'World Explorer', target: 25, achieved: false, progress: countriesVisited },
+                { name: 'Global Citizen', target: 50, achieved: false, progress: countriesVisited },
               ].map(m => (
                 <div key={m.name} style={{
                   display: 'flex', alignItems: 'center', gap: 'var(--space-3)',

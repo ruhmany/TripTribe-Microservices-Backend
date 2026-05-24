@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace TripPlanningService.Api.Endpoints.DayEndpoints
 {
     public class RemoveDayFromTripEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapDelete("Trips/RemoveDay", async (RemoveDayFromTripDTO removeDayFromTripDTO, ISender sender) =>
+            app.MapDelete("Trips/RemoveDay", async ([FromBody] RemoveDayFromTripDTO removeDayFromTripDTO, ISender sender) =>
             {
                 var command = new RemoveDayFromTripCommand(removeDayFromTripDTO);
                 var result = await sender.Send(command);

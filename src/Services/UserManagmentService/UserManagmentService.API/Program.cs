@@ -24,7 +24,7 @@ builder.Services.AddControllers();
 // Configure DbContext
 var connectionString = builder.Configuration.GetConnectionString("defaultConnection");
 builder.Services.AddDbContext<UserDbContext>(options =>
-    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("UserManagmentService.Data")));
+    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("UserManagmentService.API")));
 
 // Configure JWT Authentication
 var jwtSecret = builder.Configuration["JwtSettings:Secret"] ?? "SuperSecretKeyForTripTribeAuthServiceThatIsLongEnoughToSatisfyHMACRequirements";
@@ -61,14 +61,14 @@ builder.Services.AddScoped<IEmailSmsService, EmailSmsService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 // Configure OpenAPI
-builder.Services.AddOpenApi();
+// builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    // app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();

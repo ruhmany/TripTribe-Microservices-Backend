@@ -5,6 +5,7 @@ import Sidebar from './components/layout/Sidebar';
 import Navbar from './components/layout/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Explore from './pages/Explore';
 import TripDetail from './pages/TripDetail';
@@ -42,6 +43,7 @@ export default function App() {
           {/* Public routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
 
           {/* Protected routes with layout */}
           <Route element={<ProtectedRoute />}>

@@ -1,34 +1,44 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Sparkles, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Mail, Phone, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function Login() {
+export default function SignUp() {
   const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, demoLogin } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!email || !phoneNumber || !password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     setLoading(true);
     try {
-      await login(email, password);
+      await register(email, phoneNumber, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Login failed. Please verify your credentials.');
+      setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDemo = () => {
-    if (demoLogin()) navigate('/dashboard');
   };
 
   return (
@@ -42,15 +52,17 @@ export default function Login() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <div style={{ textAlign: 'center', marginBottom: 'var(--space-6)' }}>
-          <div className="landing-logo" style={{ justifyContent: 'center', marginBottom: 'var(--space-4)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'var(--space-4)' }}>
+          <div className="landing-logo" style={{ justifyContent: 'center', marginBottom: 'var(--space-3)' }}>
             <div className="landing-logo-icon"><Sparkles size={20} /></div>
             TripTribe
           </div>
         </div>
 
-        <h1>Welcome Back</h1>
-        <p className="login-subtitle">Sign in to continue your adventures</p>
+        <h1 style={{ marginBottom: 'var(--space-1)', textAlign: 'center' }}>Create Account</h1>
+        <p className="login-subtitle" style={{ marginBottom: 'var(--space-6)', textAlign: 'center' }}>
+          Join the community of explorers today
+        </p>
 
         {error && (
           <div 
@@ -68,9 +80,9 @@ export default function Login() {
           </div>
         )}
 
-        <form className="login-form" onSubmit={handleSubmit} id="login-form">
+        <form className="login-form" onSubmit={handleSubmit} id="signup-form">
           <div className="form-group">
-            <label className="form-label" htmlFor="email">Email</label>
+            <label className="form-label" htmlFor="email">Email Address</label>
             <div style={{ position: 'relative' }}>
               <Mail size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
               <input
@@ -78,6 +90,20 @@ export default function Login() {
                 style={{ paddingLeft: '36px' }}
                 placeholder="your@email.com"
                 value={email} onChange={e => setEmail(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="phoneNumber">Phone Number</label>
+            <div style={{ position: 'relative' }}>
+              <Phone size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
+              <input
+                type="text" id="phoneNumber" className="form-input"
+                style={{ paddingLeft: '36px' }}
+                placeholder="+1 555-555-5555"
+                value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)}
                 required
               />
             </div>
@@ -116,25 +142,52 @@ export default function Login() {
             </div>
           </div>
 
+          <div className="form-group">
+            <label className="form-label" htmlFor="confirmPassword">Confirm Password</label>
+            <div style={{ position: 'relative' }}>
+              <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
+              <input
+                type={showConfirmPassword ? "text" : "password"} id="confirmPassword" className="form-input"
+                style={{ paddingLeft: '36px', paddingRight: '36px' }}
+                placeholder="••••••••"
+                value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-tertiary)',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
           <button 
             type="submit" 
             className="btn btn-primary btn-lg" 
-            id="login-btn" 
-            style={{ width: '100%' }}
+            id="signup-btn" 
+            style={{ width: '100%', marginTop: 'var(--space-2)' }}
             disabled={loading}
           >
-            {loading ? 'Signing In...' : 'Sign In'} <ArrowRight size={16} />
+            {loading ? 'Creating Account...' : 'Sign Up'} <ArrowRight size={16} />
           </button>
         </form>
 
-        <div className="login-divider" style={{ margin: 'var(--space-6) 0' }}>or</div>
-
-        <button className="btn btn-secondary demo-login-btn" onClick={handleDemo} id="demo-login-btn">
-          <Sparkles size={16} /> Try Demo Account
-        </button>
-
         <p style={{ textAlign: 'center', marginTop: 'var(--space-6)', fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>
-          Don't have an account? <Link to="/signup" style={{ color: 'var(--primary-300)' }}>Sign up free</Link>
+          Already have an account? <Link to="/login" style={{ color: 'var(--primary-300)' }}>Sign in</Link>
         </p>
       </motion.div>
     </div>

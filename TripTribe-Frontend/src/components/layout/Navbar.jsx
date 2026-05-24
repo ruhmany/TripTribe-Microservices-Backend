@@ -23,7 +23,7 @@ export default function Navbar({ collapsed }) {
         </button>
         {user && (
           <div className="navbar-avatar" id="user-avatar">
-            {user.initials}
+            {user.initials || (user.email ? user.email.substring(0, 2).toUpperCase() : 'US')}
           </div>
         )}
       </div>

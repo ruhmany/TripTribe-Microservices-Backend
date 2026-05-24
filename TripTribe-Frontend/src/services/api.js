@@ -7,29 +7,179 @@ import { trips, guides, feedItems, friendMatches, trendingDestinations, timeline
 
 const delay = (ms = 300) => new Promise(r => setTimeout(r, ms));
 
+function mapTrip(dto) {
+  if (!dto) return null;
+  const createdBy = dto.createdBy || 'Unknown Explorer';
+  const ownerInitials = createdBy
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .substring(0, 2)
+    .toUpperCase() || 'TR';
+
+  const ownerId = dto.ownerId || dto.owerId || '';
+
+  const dayDetails = (dto.dayDetails || []).map(day => ({
+    dayId: day.dayId,
+    date: day.date,
+    activities: (day.activities || []).map(act => ({
+      activityId: act.activityId,
+      title: act.title,
+      description: act.description,
+      money: Number(act.money || 0),
+      location: act.location,
+      startTime: act.startTime ? act.startTime.substring(0, 5) : '09:00',
+      endTime: act.endTime ? act.endTime.substring(0, 5) : '10:00',
+      type: Number(act.type || 10),
+    }))
+  }));
+
+  return {
+    tripId: dto.tripId,
+    ownerId: ownerId,
+    ownerName: createdBy,
+    ownerInitials: ownerInitials,
+    title: dto.title,
+    description: dto.details || '',
+    startDate: dto.startDate,
+    endDate: dto.endDate,
+    status: Number(dto.status || 1),
+    visibility: Number(dto.visibility || 1),
+    confidenceScore: dto.confidenceScore || 0,
+    forkCount: dto.forkCount || 0,
+    rating: dto.rating || 0,
+    ratingCount: dto.ratingCount || 0,
+    coverGradient: 'linear-gradient(135deg, hsl(205, 85%, 45%), hsl(172, 70%, 50%))',
+    tags: ['Adventure'],
+    collaborators: [],
+    dayDetails: dayDetails
+  };
+}
+
 export const tripService = {
   async getTrips() {
-    await delay();
+    const userJson = localStorage.getItem('user');
+    const user = userJson ? JSON.parse(userJson) : null;
+    if (user && user.id) {
+      return this.getUserTrips(user.id);
+    }
     return [...trips];
   },
 
   async getUserTrips(userId) {
-    await delay();
-    return trips.filter(t => t.ownerId === userId);
+    let backendTrips = [];
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip/user-trips?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+      });
+      if (response.ok) {
+        const json = await response.json();
+        if (json.data && Array.isArray(json.data)) {
+          backendTrips = json.data.map(mapTrip);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to fetch user trips from backend", e);
+    }
+
+    const mockTrips = trips.filter(t => t.ownerId === userId);
+    const merged = [...backendTrips];
+    for (const m of mockTrips) {
+      if (!merged.some(t => t.tripId === m.tripId)) {
+        merged.push(m);
+      }
+    }
+    return merged;
   },
 
   async getTripDetails(tripId) {
-    await delay();
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip?tripId=${tripId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+      });
+      if (response.ok) {
+        const json = await response.json();
+        if (json.data) {
+          return mapTrip(json.data);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to fetch trip details from backend, falling back to mock", e);
+    }
     return trips.find(t => t.tripId === tripId) || null;
   },
 
   async getPublicTrips() {
-    await delay();
-    return trips.filter(t => t.status === 5);
+    const userJson = localStorage.getItem('user');
+    const user = userJson ? JSON.parse(userJson) : null;
+    let backendTrips = [];
+    if (user && user.id) {
+      try {
+        backendTrips = await this.getUserTrips(user.id);
+      } catch (e) {
+        console.warn("Failed to fetch user trips for explore", e);
+      }
+    }
+    const publicBackendTrips = backendTrips.filter(t => t.status === 5);
+    const mockPublic = trips.filter(t => t.status === 5);
+    const allPublic = [...publicBackendTrips];
+    for (const m of mockPublic) {
+      if (!allPublic.some(t => t.tripId === m.tripId)) {
+        allPublic.push(m);
+      }
+    }
+    return allPublic;
   },
 
   async createTrip(data) {
-    await delay(500);
+    const payload = {
+      createTripDTO: {
+        ownerId: data.ownerId,
+        createdBy: data.ownerName || 'Unknown',
+        title: data.title,
+        description: data.description,
+        visibility: Number(data.visibility),
+        status: 1,
+        start: data.startDate,
+        end: data.endDate,
+      }
+    };
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        const json = await response.json();
+        return {
+          tripId: json.data.id || json.data.Id,
+          ...data,
+          status: 1,
+          confidenceScore: 0,
+          forkCount: 0,
+          rating: 0,
+          ratingCount: 0,
+          collaborators: [],
+          dayDetails: [],
+        };
+      }
+    } catch (e) {
+      console.warn('Backend createTrip failed, using mock fallback', e);
+    }
+    // Mock fallback
+    await delay(300);
     const newTrip = {
       tripId: `t-${Date.now()}`,
       ...data,
@@ -40,23 +190,286 @@ export const tripService = {
       ratingCount: 0,
       collaborators: [],
       dayDetails: [],
+      coverGradient: data.coverGradient || 'linear-gradient(135deg, hsl(205, 85%, 45%), hsl(172, 70%, 50%))',
+      tags: data.tags || ['Adventure'],
     };
     trips.push(newTrip);
     return newTrip;
   },
 
   async updateTrip(tripId, data) {
-    await delay();
+    const payload = {
+      updateTripDTO: {
+        tripId: tripId,
+        ownerId: data.ownerId,
+        title: data.title,
+        description: data.description,
+      }
+    };
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        const json = await response.json();
+        return mapTrip(json.data);
+      }
+    } catch (e) {
+      console.warn('Backend updateTrip failed, using mock fallback', e);
+    }
+    // Mock fallback
+    await delay(300);
     const idx = trips.findIndex(t => t.tripId === tripId);
-    if (idx >= 0) trips[idx] = { ...trips[idx], ...data };
-    return trips[idx];
+    if (idx !== -1) {
+      trips[idx] = { ...trips[idx], ...data };
+      return { ...trips[idx] };
+    }
+    return null;
+  },
+
+  async deleteTrip(tripId, ownerId) {
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ tripId, ownerId }),
+      });
+      if (response.ok) {
+        return true;
+      }
+    } catch (e) {
+      console.warn('Backend deleteTrip failed, using mock fallback', e);
+    }
+    // Mock fallback
+    await delay(300);
+    const idx = trips.findIndex(t => t.tripId === tripId);
+    if (idx !== -1) {
+      trips.splice(idx, 1);
+    }
+    return true;
   },
 
   async publishTrip(tripId) {
-    await delay();
+    const userJson = localStorage.getItem('user');
+    const user = userJson ? JSON.parse(userJson) : {};
+    const response = await fetch(`${GATEWAY_URL}/trip/publish`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify({ ownerId: user.id, tripId }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to publish trip');
+    }
+    const json = await response.json();
+    return json.data;
+  },
+
+  async addDay(tripId, ownerId, date) {
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip/add-day-to-tip`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ tripId, ownerId, date }),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        return result.data;
+      }
+    } catch (e) {
+      console.warn('Backend addDay failed, using mock fallback', e);
+    }
+    // Mock fallback
+    await delay(300);
     const trip = trips.find(t => t.tripId === tripId);
-    if (trip) trip.status = 5;
-    return trip;
+    if (trip) {
+      const newDay = { dayId: `d-${Date.now()}`, date, activities: [] };
+      trip.dayDetails.push(newDay);
+      return newDay;
+    }
+    return null;
+  },
+
+  async removeDay(tripId, dayId, ownerId) {
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip/remove-day-from-trip`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ tripId, dayId, ownerId }),
+      });
+      if (response.ok) {
+        const result = await response.json();
+        return result.data;
+      }
+    } catch (e) {
+      console.warn('Backend removeDay failed, using mock fallback', e);
+    }
+    // Mock fallback
+    await delay(300);
+    const trip = trips.find(t => t.tripId === tripId);
+    if (trip) {
+      trip.dayDetails = trip.dayDetails.filter(d => d.dayId !== dayId);
+    }
+    return true;
+  },
+
+  async addActivity(data) {
+    const payload = {
+      tripId: data.tripId,
+      dayId: data.dayId,
+      ownerId: data.ownerId,
+      activityId: data.activityId || null,
+      title: data.title,
+      notes: data.notes || data.description || '',
+      startTime: data.startTime || '09:00',
+      endTime: data.endTime || '10:00',
+      locationName: data.locationName || data.location || '',
+      longitude: Number(data.longitude || 0),
+      latitude: Number(data.latitude || 0),
+      activityType: Number(data.activityType || data.type || 10),
+      amount: Number(data.amount || data.money || 0),
+      currency: data.currency || 'USD',
+    };
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip/add-activity-to-day`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        const json = await response.json();
+        return json.data;
+      }
+    } catch (e) {
+      console.warn('Backend addActivity failed, using mock fallback', e);
+    }
+    // Mock fallback
+    await delay(300);
+    const trip = trips.find(t => t.tripId === data.tripId);
+    if (trip) {
+      const day = trip.dayDetails.find(d => d.dayId === data.dayId);
+      if (day) {
+        const newActivity = {
+          activityId: `act-${Date.now()}`,
+          title: data.title,
+          description: data.notes || data.description || '',
+          money: Number(data.amount || data.money || 0),
+          location: data.locationName || data.location || '',
+          startTime: data.startTime || '09:00',
+          endTime: data.endTime || '10:00',
+          type: Number(data.activityType || data.type || 10),
+        };
+        day.activities.push(newActivity);
+        return newActivity;
+      }
+    }
+    return null;
+  },
+
+  async updateActivity(data) {
+    const payload = {
+      tripId: data.tripId,
+      dayId: data.dayId,
+      ownerId: data.ownerId,
+      activityId: data.activityId,
+      title: data.title,
+      notes: data.notes || data.description || '',
+      startTime: data.startTime || '09:00',
+      endTime: data.endTime || '10:00',
+      locationName: data.locationName || data.location || '',
+      longitude: Number(data.longitude || 0),
+      latitude: Number(data.latitude || 0),
+      activityType: Number(data.activityType || data.type || 10),
+      amount: Number(data.amount || data.money || 0),
+      currency: data.currency || 'USD',
+    };
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip/update-activity`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        const json = await response.json();
+        return json.data;
+      }
+    } catch (e) {
+      console.warn('Backend updateActivity failed, using mock fallback', e);
+    }
+    // Mock fallback
+    await delay(300);
+    const trip = trips.find(t => t.tripId === data.tripId);
+    if (trip) {
+      for (const day of trip.dayDetails) {
+        const actIdx = day.activities.findIndex(a => a.activityId === data.activityId);
+        if (actIdx !== -1) {
+          day.activities[actIdx] = {
+            ...day.activities[actIdx],
+            title: data.title,
+            description: data.notes || data.description || '',
+            money: Number(data.amount || data.money || 0),
+            location: data.locationName || data.location || '',
+            startTime: data.startTime || '09:00',
+            endTime: data.endTime || '10:00',
+            type: Number(data.activityType || data.type || 10),
+          };
+          return day.activities[actIdx];
+        }
+      }
+    }
+    return null;
+  },
+
+  async removeActivity(tripId, dayId, activityId, ownerId) {
+    try {
+      const response = await fetch(`${GATEWAY_URL}/trip/remove-activity`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ tripId, dayId, activityId, ownerId }),
+      });
+      if (response.ok) {
+        const json = await response.json();
+        return json.data;
+      }
+    } catch (e) {
+      console.warn('Backend removeActivity failed, using mock fallback', e);
+    }
+    // Mock fallback
+    await delay(300);
+    const trip = trips.find(t => t.tripId === tripId);
+    if (trip) {
+      const day = trip.dayDetails.find(d => d.dayId === dayId);
+      if (day) {
+        day.activities = day.activities.filter(a => a.activityId !== activityId);
+      }
+    }
+    return true;
   },
 };
 

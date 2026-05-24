@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Clock, DollarSign, Check, Circle } from 'lucide-react';
+import { MapPin, Clock, DollarSign, Check, Circle, Trash2 } from 'lucide-react';
 import { ActivityTypeLabels, ActivityTypeColors } from '../../data/mockData';
 
-export default function ActivityCheckpoint({ activity, activityId, isCompleted, onToggle, onCreatePost, index = 0 }) {
+export default function ActivityCheckpoint({ activity, activityId, isCompleted, onToggle, onCreatePost, index = 0, showDelete, onDelete }) {
   const typeLabel = ActivityTypeLabels[activity.type] || 'Other';
   const typeColor = ActivityTypeColors[activity.type] || 'hsl(0, 0%, 55%)';
 
@@ -136,6 +136,30 @@ export default function ActivityCheckpoint({ activity, activityId, isCompleted, 
               }}>
                 {typeLabel}
               </span>
+
+              {showDelete && onDelete && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                  }}
+                  className="btn-ghost"
+                  style={{
+                    padding: '2px',
+                    marginLeft: 'auto',
+                    color: 'var(--text-tertiary)',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    border: 'none',
+                    background: 'none',
+                  }}
+                  title="Delete activity"
+                >
+                  <Trash2 size={13} style={{ color: 'var(--text-secondary)' }} />
+                </button>
+              )}
             </div>
 
             {/* Time row */}

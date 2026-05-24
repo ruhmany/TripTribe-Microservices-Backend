@@ -1,17 +1,41 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { tripService, checkpointService, postService } from '../services/api';
 import { TripStatusLabels, TripStatusColors, ActivityTypeLabels, ActivityTypeColors } from '../data/mockData';
-import { motion } from 'framer-motion';
-import { Calendar, MapPin, Clock, DollarSign, GitFork, Star, Heart, MessageCircle, Share2, Users, ArrowLeft, Award } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calendar, MapPin, Clock, DollarSign, GitFork, Star, Heart, MessageCircle, Share2, Users, ArrowLeft, Award, Plus, Trash2, X, Pencil, AlertTriangle } from 'lucide-react';
 import ActivityCheckpoint from '../components/trip/ActivityCheckpoint';
 import CreatePostModal from '../components/trip/CreatePostModal';
+import ActivityFormModal from '../components/trip/ActivityFormModal';
+import EditTripModal from '../components/trip/EditTripModal';
+import { ToastContainer, useToast } from '../components/layout/Toast';
 
 export default function TripDetail() {
   const { tripId } = useParams();
+  const navigate = useNavigate();
   const [trip, setTrip] = useState(null);
   const [checkpoints, setCheckpoints] = useState({});
   const [postCreationActivity, setPostCreationActivity] = useState(null);
+
+  // CRUD modal state
+  const [showActivityModal, setShowActivityModal] = useState(false);
+  const [selectedDayForActivity, setSelectedDayForActivity] = useState(null);
+  const [editingActivity, setEditingActivity] = useState(null); // null = add, object = edit
+  const [showEditTripModal, setShowEditTripModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Toast
+  const { toasts, addToast, dismissToast } = useToast();
+
+  const [user, setUser] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user'));
+      return u || null;
+    } catch {
+      return null;
+    }
+  });
+  const isOwner = user && trip && user.id === trip.ownerId;
 
   useEffect(() => {
     tripService.getTripDetails(tripId).then(setTrip);
@@ -59,6 +83,99 @@ export default function TripDetail() {
   ).length;
   const completionPercentage = totalActivities > 0 ? Math.round((completedCount / totalActivities) * 100) : 0;
 
+  // Refresh trip data helper
+  const refreshTrip = async () => {
+    const refreshed = await tripService.getTripDetails(tripId);
+    setTrip(refreshed);
+  };
+
+  // ─── CRUD Handlers ───
+
+  const handleAddDay = async () => {
+    try {
+      let nextDate;
+      if (trip.dayDetails.length > 0) {
+        const lastDay = trip.dayDetails[trip.dayDetails.length - 1];
+        const d = new Date(lastDay.date);
+        d.setDate(d.getDate() + 1);
+        nextDate = d.toISOString().split('T')[0];
+      } else {
+        // When no days exist yet, use the trip start date
+        nextDate = trip.startDate;
+      }
+      await tripService.addDay(tripId, user.id, nextDate);
+      await refreshTrip();
+      addToast('Day added successfully!', 'success');
+    } catch (e) {
+      console.error('Failed to add day', e);
+      addToast('Failed to add day', 'error');
+    }
+  };
+
+  const handleRemoveDay = async (day) => {
+    try {
+      await tripService.removeDay(tripId, day.dayId, user.id);
+      await refreshTrip();
+      addToast('Day removed', 'success');
+    } catch (e) {
+      console.error('Failed to remove day', e);
+      addToast('Failed to remove day', 'error');
+    }
+  };
+
+  const handleAddActivity = async (formData) => {
+    const data = {
+      tripId,
+      dayId: selectedDayForActivity.dayId,
+      ownerId: user.id,
+      ...formData,
+    };
+    await tripService.addActivity(data);
+    await refreshTrip();
+    addToast('Activity added!', 'success');
+  };
+
+  const handleEditActivity = async (formData) => {
+    const data = {
+      tripId,
+      dayId: editingActivity.dayId,
+      ownerId: user.id,
+      activityId: editingActivity.activityId,
+      ...formData,
+    };
+    await tripService.updateActivity(data);
+    await refreshTrip();
+    addToast('Activity updated!', 'success');
+  };
+
+  const handleRemoveActivity = async (day, activity) => {
+    try {
+      await tripService.removeActivity(tripId, day.dayId, activity.activityId, user.id);
+      await refreshTrip();
+      addToast('Activity removed', 'success');
+    } catch (e) {
+      console.error('Failed to remove activity', e);
+      addToast('Failed to remove activity', 'error');
+    }
+  };
+
+  const handleEditTrip = async (formData) => {
+    await tripService.updateTrip(tripId, { ownerId: user.id, ...formData });
+    await refreshTrip();
+    addToast('Trip updated!', 'success');
+  };
+
+  const handleDeleteTrip = async () => {
+    try {
+      await tripService.deleteTrip(tripId, user.id);
+      addToast('Trip deleted', 'success');
+      navigate('/dashboard');
+    } catch (e) {
+      console.error('Failed to delete trip', e);
+      addToast('Failed to delete trip', 'error');
+    }
+  };
+
   return (
     <div className="page-content">
       <Link to="/explore" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>
@@ -82,9 +199,24 @@ export default function TripDetail() {
         </div>
 
         <div className="trip-detail-actions">
-          <button className="btn btn-primary" id="fork-trip-btn"><GitFork size={16} /> Fork This Plan</button>
-          <button className="btn btn-secondary"><Heart size={16} /> Save</button>
-          <button className="btn btn-secondary"><Share2 size={16} /> Share</button>
+          {isOwner ? (
+            <>
+              <button className="btn btn-primary" onClick={() => setShowEditTripModal(true)} id="edit-trip-btn">
+                <Pencil size={16} /> Edit Trip
+              </button>
+              <button className="btn btn-secondary" onClick={() => setShowDeleteConfirm(true)} id="delete-trip-btn"
+                style={{ color: 'var(--danger)', borderColor: 'hsla(0, 70%, 45%, 0.3)' }}>
+                <Trash2 size={16} /> Delete
+              </button>
+              <button className="btn btn-secondary"><Share2 size={16} /> Share</button>
+            </>
+          ) : (
+            <>
+              <button className="btn btn-primary" id="fork-trip-btn"><GitFork size={16} /> Fork This Plan</button>
+              <button className="btn btn-secondary"><Heart size={16} /> Save</button>
+              <button className="btn btn-secondary"><Share2 size={16} /> Share</button>
+            </>
+          )}
         </div>
 
         {/* Collaborators */}
@@ -142,32 +274,67 @@ export default function TripDetail() {
             <div className="timeline">
               {trip.dayDetails.map((day, dayIndex) => (
                 <motion.div
-                  key={day.date}
+                  key={day.dayId || day.date}
                   className="timeline-day"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: dayIndex * 0.15 }}
                 >
                   <div className="timeline-dot" />
-                  <div className="timeline-date">
-                    Day {dayIndex + 1} — {new Date(day.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+                  <div className="timeline-date" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>Day {dayIndex + 1} — {new Date(day.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
+                    {isOwner && day.activities.length === 0 && (
+                      <button className="icon-btn" onClick={() => handleRemoveDay(day)} aria-label="Delete Day"
+                        title="Remove this empty day">
+                        <Trash2 size={16} />
+                      </button>
+                    )}
                   </div>
                   <div className="timeline-activities">
                     {day.activities.map((activity, ai) => {
                       const activityId = `a-${tripIdNum}-${dayIndex}-${ai}`;
                       const isCompleted = !!checkpoints[activityId]?.completed;
                       return (
-                        <ActivityCheckpoint
-                          key={activityId}
-                          activity={activity}
-                          activityId={activityId}
-                          isCompleted={isCompleted}
-                          onToggle={handleToggleCheckpoint}
-                          onCreatePost={setPostCreationActivity}
-                          index={ai}
-                        />
+                        <div key={activityId} style={{ position: 'relative' }}>
+                          <ActivityCheckpoint
+                            activity={activity}
+                            activityId={activityId}
+                            isCompleted={isCompleted}
+                            onToggle={handleToggleCheckpoint}
+                            onCreatePost={setPostCreationActivity}
+                            index={ai}
+                          />
+                          {isOwner && (
+                            <div style={{ position: 'absolute', top: 4, right: 4, display: 'flex', gap: '4px' }}>
+                              <button className="icon-btn"
+                                onClick={() => {
+                                  setEditingActivity({ ...activity, dayId: day.dayId });
+                                  setSelectedDayForActivity(day);
+                                  setShowActivityModal(true);
+                                }}
+                                aria-label="Edit Activity" title="Edit this activity">
+                                <Pencil size={14} />
+                              </button>
+                              <button className="icon-btn"
+                                onClick={() => handleRemoveActivity(day, activity)}
+                                aria-label="Delete Activity" title="Remove this activity">
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
+                    {isOwner && (
+                      <button className="btn btn-secondary" style={{ marginTop: 'var(--space-2)' }}
+                        onClick={() => {
+                          setEditingActivity(null); // add mode
+                          setSelectedDayForActivity(day);
+                          setShowActivityModal(true);
+                        }}>
+                        <Plus size={16} /> Add Activity
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -178,6 +345,11 @@ export default function TripDetail() {
               <h3>No itinerary yet</h3>
               <p>Days and activities haven't been added to this trip</p>
             </div>
+          )}
+          {isOwner && (
+            <button className="btn btn-primary" style={{ marginTop: 'var(--space-4)' }} onClick={handleAddDay}>
+              <Plus size={16} /> Add Day
+            </button>
           )}
         </div>
 
@@ -210,6 +382,10 @@ export default function TripDetail() {
           </div>
         </div>
       </div>
+
+      {/* ─── Modals ─── */}
+
+      {/* Create Post Modal */}
       <CreatePostModal
         isOpen={!!postCreationActivity}
         onClose={() => setPostCreationActivity(null)}
@@ -217,6 +393,81 @@ export default function TripDetail() {
         trip={trip}
         onPost={handlePostCreated}
       />
+
+      {/* Add/Edit Activity Modal */}
+      <ActivityFormModal
+        isOpen={showActivityModal}
+        onClose={() => {
+          setShowActivityModal(false);
+          setEditingActivity(null);
+          setSelectedDayForActivity(null);
+        }}
+        onSubmit={editingActivity ? handleEditActivity : handleAddActivity}
+        dayDate={selectedDayForActivity?.date}
+        editData={editingActivity}
+      />
+
+      {/* Edit Trip Modal */}
+      <EditTripModal
+        isOpen={showEditTripModal}
+        onClose={() => setShowEditTripModal(false)}
+        onSubmit={handleEditTrip}
+        trip={trip}
+      />
+
+      {/* Delete Trip Confirmation */}
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowDeleteConfirm(false)}
+          >
+            <motion.div
+              className="modal"
+              onClick={e => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              style={{ maxWidth: '420px' }}
+            >
+              <div className="modal-body" style={{ textAlign: 'center', padding: 'var(--space-8) var(--space-6)' }}>
+                <div style={{
+                  width: 56, height: 56, borderRadius: '50%',
+                  background: 'hsla(0, 70%, 45%, 0.15)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto var(--space-4)',
+                  color: 'var(--danger)',
+                }}>
+                  <AlertTriangle size={28} />
+                </div>
+                <h2 style={{ fontSize: 'var(--text-xl)', marginBottom: 'var(--space-2)' }}>Delete Trip?</h2>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)', lineHeight: 'var(--leading-relaxed)', marginBottom: 'var(--space-6)' }}>
+                  This will permanently delete <strong>"{trip.title}"</strong> and all its days and activities. This action cannot be undone.
+                </p>
+                <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'center' }}>
+                  <button className="btn btn-secondary" onClick={() => setShowDeleteConfirm(false)}>
+                    Cancel
+                  </button>
+                  <button className="btn" onClick={handleDeleteTrip}
+                    style={{
+                      background: 'var(--danger)', color: 'white',
+                      border: 'none', fontWeight: 600,
+                    }}>
+                    <Trash2 size={16} /> Delete Trip
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }
